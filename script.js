@@ -10,8 +10,8 @@ const backgroundWindow = document.querySelector('.window--background');
 const confirmSignUp = document.querySelector('.btn2');
 const confirmLogin = document.querySelector('.btn1');
 
-const username = document.querySelector('.new--firstname');
-const password = document.querySelector('.new--firstname');
+const username = document.querySelector('.username');
+const password = document.querySelector('.password');
 const newFirstname = document.querySelector('.new--firstname');
 const newLastname = document.querySelector('.new--lastname');
 const newEmail = document.querySelector('.new--email');
@@ -19,6 +19,7 @@ const newUsername = document.querySelector('.new--username');
 const newPassword = document.querySelector('.new--password'); 
 const confirmPassword = document.querySelector('.confirm--password'); 
 ////User Input entries 
+
 
 
 
