@@ -42,27 +42,27 @@
 
             <div class="form_structure"> 
                 <label> Name: </label>
-                <input class="new--firstname" type="text" />
+                <input class="new--firstname" type="text" id="fname" />
             </div>
 
             <div class="form_structure"> 
                 <label> LastName: </label>
-                <input class="new--lastname" type="text" />
+                <input class="new--lastname" type="text" id="lname" />
             </div>
 
             <div class="form_structure"> 
                 <label> Email: </label>
-                <input class="new--email" type="text" />
+                <input class="new--email" type="text" id="email"/>
             </div>
 
             <div class="form_structure"> 
                 <label> UserName: </label>
-                <input class="new--username" type="text" />
+                <input class="new--username" type="text" id="uname" />
             </div>
     
             <div class="form_structure"> 
                 <label> Password: </label>
-                <input class="new--password" type="text" />
+                <input class="new--password" type="text" id="pin"/>
             </div>
 
             <div class="form_structure"> 
@@ -70,9 +70,32 @@
                 <input class="confirm--password" type="text" />
             </div>
             
-            <button class="btn2"> Sign up </button>
+            <button id="btn2" class="btn2"> Sign up </button>
 
         </form>
+	<script>
+	Let accounts = [];
+	const addAcc = (ev)=>{
+            ev.preventDefault();  //to stop the form submitting
+            let account = {
+                firstname: document.getElementById('fname').value,
+                lastname: document.getElementById('lname').value,
+                email: document.getElementById('email').value,
+                username: document.getElementById('uname').value,
+                pin: document.getElementById('pin').value,
+
+
+            }
+	accounts.push(account);
+	document.querySelector('form').reset()
+	 localStorage.setItem('MyMovieList', JSON.stringify(accounts) );
+        }
+        document.addEventListener('DOMContentLoaded', ()=>{
+            document.getElementById('btn2').addEventListener('click', addAcc);
+        });
+        
+       </script>
+
     </div>
     <!-- End of login/signup segment  -->
 
