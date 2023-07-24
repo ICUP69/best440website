@@ -10,6 +10,8 @@ const backgroundWindow = document.querySelector('.window--background');
 const confirmSignUp = document.querySelector('.btn2');
 const confirmLogin = document.querySelector('.btn1');
 
+
+///All User Input --> call (variable).value to access it's data 
 const username = document.querySelector('.username');
 const password = document.querySelector('.password');
 const newFirstname = document.querySelector('.new--firstname');
@@ -19,9 +21,6 @@ const newUsername = document.querySelector('.new--username');
 const newPassword = document.querySelector('.new--password'); 
 const confirmPassword = document.querySelector('.confirm--password'); 
 ////User Input entries 
-
-
-
 
 class accounts {
     #accounts = []; //private field might not need it tho cause sql :/
@@ -47,6 +46,8 @@ const closeWindow = () => {
     backgroundWindow.classList.add('hidden');
 };
 
+
+
 ///Event Listeners
 
 loginBtn.addEventListener('click', function (e) {
@@ -68,12 +69,13 @@ backgroundWindow.addEventListener('click', function (e) {
 
 confirmSignUp.addEventListener('click', function (e) {
     e.preventDefault();
+
+    
     ///Check for Duplicate username and email --> return alert and delete entries 
 
     //Check for Unmatching password --> if it fails return alert and delete entries 
 
     //If all passes, register account
-
 });
 
 confirmLogin.addEventListener('click', function (e) {
