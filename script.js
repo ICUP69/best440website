@@ -1,5 +1,4 @@
-
-//Variables
+//Variabless
 
 const loginBtn = document.querySelector('.login_btn');
 const accountBtn = document.querySelector('.account_btn');
@@ -24,7 +23,7 @@ const confirmPassword = document.querySelector('.confirm--password');
 
 class accounts {
     #accounts = []; //private field might not need it tho cause sql :/
-
+    
     constructor(firstName, lastName, email, username, pin) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -45,8 +44,6 @@ const closeWindow = () => {
     if (!signupWindow.classList.contains('hidden')) signupWindow.classList.add('hidden');
     backgroundWindow.classList.add('hidden');
 };
-
-
 
 ///Event Listeners
 
@@ -69,16 +66,46 @@ backgroundWindow.addEventListener('click', function (e) {
 
 confirmSignUp.addEventListener('click', function (e) {
     e.preventDefault();
+    //Check for Unmatching password can be done here without accessing DB --> if it fails return alert and delete entries 
 
-    
-    ///Check for Duplicate username and email --> return alert and delete entries 
 
-    //Check for Unmatching password --> if it fails return alert and delete entries 
+    //////Check for Duplicate username and email --> return alert and delete entries --> may need access to DB
+
+
 
     //If all passes, register account
+    //////CODE TO SEND DATA TO SERVER 
+
+    ///Might refactor this later, was just testing it
+    newFirst = newFirstname.value; 
+    newLast = newLastname.value;
+    newAddress = newEmail.value; 
+    newUser = newUsername.value; 
+    newPas = newPassword.value;
+
+    console.log(newFirst, newLast);
+    // console.log(typeof newFirst, typeof newLast);
+    // console.log('this is working');
+
+    const data = { newFirst, newLast , newAddress , newUser , newPas};
+    const options = {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json",
+          },
+        body: JSON.stringify(data)
+    };
+
+    fetch('/newlogin', options);
+
+    ///////
+
 });
 
+
+
 confirmLogin.addEventListener('click', function (e) {
+    //Access DB using get 
 
 });
 
