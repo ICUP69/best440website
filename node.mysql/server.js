@@ -2,6 +2,8 @@
 //npm init 
 //npm install --save mysql express
 
+//I used express cause it was easier to render the html doc 
+
 const mysql = require('mysql');
 const express = require('express');
 const app = express();
