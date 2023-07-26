@@ -1,1 +1,26 @@
-this is a test 
+use projectdb ; 
+
+CREATE TABLE account(
+username varchar(20) NOT NULL,
+password varchar(20) NOT NULL,
+firstName varchar(20) NOT NULL,
+lastName varchar(20) NOT NULL,
+email varchar(20) NOT NULL,
+primary key(username), 
+unique key email(email)
+);
+
+INSERT INTO account (
+username,
+password,
+firstName,
+lastName, 
+email
+)
+VALUES (
+'JaunitoGaming',
+'Jaunito1234',
+'Juanito',
+'Gabriel',
+'JuanitoGaming@gmail.com'
+)
