@@ -1,5 +1,4 @@
 //Variabless
-
 const loginBtn = document.querySelector('.login_btn');
 const accountBtn = document.querySelector('.account_btn');
 const loginWindow = document.querySelector('.window--login');
@@ -11,8 +10,8 @@ const confirmLogin = document.querySelector('.btn1');
 
 
 ///All User Input --> call (variable).value to access it's data 
-const username = document.querySelector('.username');
-const password = document.querySelector('.password');
+const usernameLogin = document.querySelector('.username');
+const passwordLogin = document.querySelector('.password');
 const newFirstname = document.querySelector('.new--firstname');
 const newLastname = document.querySelector('.new--lastname');
 const newEmail = document.querySelector('.new--email');
@@ -21,17 +20,20 @@ const newPassword = document.querySelector('.new--password');
 const confirmPassword = document.querySelector('.confirm--password'); 
 ////User Input entries 
 
-class accounts {
-    #accounts = []; //private field might not need it tho cause sql :/
+const signUp = [newFirstname, newLastname, newEmail, newUsername, newPassword];
+const logIn = [usernameLogin, passwordLogin];
+
+// class accounts {
+//     #accounts = []; //private field might not need it tho cause sql :/
     
-    constructor(firstName, lastName, email, username, pin) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.username = username;
-        this.pin = pin;
-    }
-};
+//     constructor(firstName, lastName, email, username, pin) {
+//         this.firstName = firstName;
+//         this.lastName = lastName;
+//         this.email = email;
+//         this.username = username;
+//         this.pin = pin;
+//     }
+// };
 
 //Functions
 const openWindow = (l) => {
@@ -64,30 +66,28 @@ backgroundWindow.addEventListener('click', function (e) {
 
 
 
-confirmSignUp.addEventListener('click', function (e) {
+confirmSignUp.addEventListener('click', async function (e) {
     e.preventDefault();
     //Check for Unmatching password can be done here without accessing DB --> if it fails return alert and delete entries 
-
+   
 
     //////Check for Duplicate username and email --> return alert and delete entries --> may need access to DB
 
-
-
     //If all passes, register account
     //////CODE TO SEND DATA TO SERVER 
+    
+    ///Refactored --> SQL WANTS TO USE SAME VARIABLE NAMES TO QUERY INTO DB
+    firstName = newFirstname.value; 
+    lastName = newLastname.value;
+    email = newEmail.value; 
+    username = newUsername.value; 
+    password = newPassword.value;
 
-    ///Might refactor this later, was just testing it
-    newFirst = newFirstname.value; 
-    newLast = newLastname.value;
-    newAddress = newEmail.value; 
-    newUser = newUsername.value; 
-    newPas = newPassword.value;
-
-    console.log(newFirst, newLast);
+    console.log(firstName, lastName);
     // console.log(typeof newFirst, typeof newLast);
     // console.log('this is working');
 
-    const data = { newFirst, newLast , newAddress , newUser , newPas};
+    const data = { username, password, firstName, lastName, email};
     const options = {
         method: 'POST',
         headers: {
@@ -96,9 +96,16 @@ confirmSignUp.addEventListener('click', function (e) {
         body: JSON.stringify(data)
     };
 
-    fetch('/newlogin', options);
+    const response = await fetch('/signup', options);
+    const json = await response.json();
+    console.log(json);
 
     ///////
+
+
+    signUp.forEach(acc => {
+        acc.value = '';
+    });
 
 });
 
@@ -106,7 +113,11 @@ confirmSignUp.addEventListener('click', function (e) {
 
 confirmLogin.addEventListener('click', function (e) {
     //Access DB using get 
-
+    e.preventDefault();
+    logIn.forEach(acc => {
+        acc.value = '';
+    });
+    
 });
 
 
