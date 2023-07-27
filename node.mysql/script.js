@@ -77,6 +77,12 @@ confirmSignUp.addEventListener('click', async function (e) {
     //Check for Unmatching password can be done here without accessing DB --> if it fails return alert and delete entries 
     if(cpass.localeCompare(password)!= 0){
         console.log("dont match");
+        
+        window.alert("passwords dont match try again!");
+
+        signUp.forEach(acc => {
+            acc.value = '';
+        });
         return ;
     }
    
