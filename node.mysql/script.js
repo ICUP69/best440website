@@ -68,20 +68,26 @@ backgroundWindow.addEventListener('click', function (e) {
 
 confirmSignUp.addEventListener('click', async function (e) {
     e.preventDefault();
+    firstName = newFirstname.value; 
+    lastName = newLastname.value;
+    email = newEmail.value; 
+    username = newUsername.value; 
+    password = newPassword.value;
+    cpass = confirmPassword.value;
     //Check for Unmatching password can be done here without accessing DB --> if it fails return alert and delete entries 
+    if(cpass.localeCompare(password)!= 0){
+        console.log("dont match");
+        return ;
+    }
    
-
+    console.log("match");
     //////Check for Duplicate username and email --> return alert and delete entries --> may need access to DB
 
     //If all passes, register account
     //////CODE TO SEND DATA TO SERVER 
     
     ///Refactored --> SQL WANTS TO USE SAME VARIABLE NAMES TO QUERY INTO DB
-    firstName = newFirstname.value; 
-    lastName = newLastname.value;
-    email = newEmail.value; 
-    username = newUsername.value; 
-    password = newPassword.value;
+    
 
     console.log(firstName, lastName);
     // console.log(typeof newFirst, typeof newLast);
