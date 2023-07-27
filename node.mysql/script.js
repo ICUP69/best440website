@@ -125,7 +125,6 @@ confirmSignUp.addEventListener('click', async function (e) {
 });
 
 
-////NOTE: PROGRAM WILL CRASH IF YOU PUT A NON EXISTING USERNAME SO MIGHT FIX LATER
 confirmLogin.addEventListener('click', async function (e) {
     //Access DB using get 
     e.preventDefault();
@@ -149,23 +148,18 @@ confirmLogin.addEventListener('click', async function (e) {
     console.log(json);
 
     ///RETURNS RESULTS
-    alert(json.status);
-    
+    if (json.status === "successful") {
+        alert("Login successful!");
+    } else if (json.status === "user_not_found") {
+        alert("Username not found.");
+    } else if (json.status === "incorrect_password") {
+        alert("Incorrect password.");
+    } else {
+        alert("Login failed.");
+    }
 
     logIn.forEach(acc => {
         acc.value = '';
     });
     
 });
-
-
-
-
-
-
-
-
-
-
-
-

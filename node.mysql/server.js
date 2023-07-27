@@ -9,13 +9,13 @@
 ////////////////////////////////SETUP server and connection to SQL 
 
 
-const mysql = require('mysql');
+const mysql = require('mysql2');
 const express = require('express');
 const app = express();
 
 ///RENDER HTML DOC TO SERVER 
 app.use(express.static('.'));
-app.get('/', function (req, res) {
+app.get('.', function (req, res) {
   res.sendFile('index.html', { root: '.' });
 });
 ////
@@ -31,7 +31,7 @@ const connection = mysql.createConnection({
   host: "localhost",
   port: "3306",
   user: "root",
-  password: '1234',
+  password: 'Computer123',
   database: "projectdb",
 });
 
@@ -114,31 +114,36 @@ app.post('/login', (request, response) => {
 
     console.log(results);
 
-    //CONVERTS SQL PASSWORD RESULTS FROM OBJECT TO JSON INTO A STRING
-    let passField = JSON.parse(JSON.stringify(results));
-    pass = passField[0].password;
-    console.log(`pass = ${pass}`);
-    console.log(`data.password = ${data.password}`);
-    ////
-
-    ////CHECK IF THE PASSWORD MATCHES THE USER INPUT RETURN STATUS
-    if (pass === data.password) {
-      status1 = 'successful';
-      console.log(`${status1} ${pass}`);
-
+    //CHECK IF THE USERNAME EXISTS
+    if (results.length === 0) {
+      status1 = 'user_not_found';
       response.json({
         status: status1,
-        userName: data.username,
       });
-
     } else {
-      response.json({
-        status: status1,
-      });
+      //CONVERTS SQL PASSWORD RESULTS FROM OBJECT TO JSON INTO A STRING
+      let passField = JSON.parse(JSON.stringify(results));
+      pass = passField[0].password;
+      console.log(`pass = ${pass}`);
+      console.log(`data.password = ${data.password}`);
+      
+      //CHECK IF THE PASSWORD MATCHES THE USER INPUT AND RETURN STATUS
+      if (pass === data.password) {
+        status1 = 'successful';
+        console.log(`${status1} ${pass}`);
+
+        response.json({
+          status: status1,
+          userName: data.username,
+        });
+      } else {
+        status1 = 'incorrect_password';
+        response.json({
+          status: status1,
+        });
+      }
     }
-
   });
-
 });
 
 
