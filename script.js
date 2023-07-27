@@ -20,7 +20,7 @@ const newPassword = document.querySelector('.new--password');
 const confirmPassword = document.querySelector('.confirm--password'); 
 ////User Input entries 
 
-const signUp = [newFirstname, newLastname, newEmail, newUsername, newPassword];
+const signUp = [newFirstname, newLastname, newEmail, newUsername, newPassword, confirmPassword];
 const logIn = [usernameLogin, passwordLogin];
 
 // class accounts {
@@ -96,12 +96,15 @@ confirmSignUp.addEventListener('click', async function (e) {
         body: JSON.stringify(data)
     };
 
+
+
     const response = await fetch('/signup', options);
     const json = await response.json();
     console.log(json);
+    console.log(json.status);
+
 
     ///////
-
 
     signUp.forEach(acc => {
         acc.value = '';
@@ -110,10 +113,33 @@ confirmSignUp.addEventListener('click', async function (e) {
 });
 
 
-
-confirmLogin.addEventListener('click', function (e) {
+////NOTE: PROGRAM WILL CRASH IF YOU PUT A NON EXISTING USERNAME SO MIGHT FIX LATER
+confirmLogin.addEventListener('click', async function (e) {
     //Access DB using get 
     e.preventDefault();
+
+    username = usernameLogin.value; 
+    password = passwordLogin.value;
+    console.log(username,password);
+
+
+    const data = {username, password};
+    const options = {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json",
+          },
+        body: JSON.stringify(data)
+    };
+
+    const response = await fetch('/login', options);
+    const json = await response.json();
+    console.log(json);
+
+    ///RETURNS RESULTS
+    alert(json.status);
+    
+
     logIn.forEach(acc => {
         acc.value = '';
     });

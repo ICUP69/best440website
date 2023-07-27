@@ -4,6 +4,11 @@
 
 //I used express cause it was easier to render the html doc 
 
+
+
+////////////////////////////////SETUP server and connection to SQL 
+
+
 const mysql = require('mysql');
 const express = require('express');
 const app = express();
@@ -40,6 +45,14 @@ connection.connect(function (err) {
 });
 
 
+
+
+
+////////////////////////////////REQUESTS AND GETS 
+
+
+
+/////SIGN IN FEATURE
 app.post('/signup', (request, response) => {
   console.log('I got a new login request');
   //console.log(request);
@@ -49,49 +62,85 @@ app.post('/signup', (request, response) => {
   console.log(data.firstName);
   console.log(data.lastName);
 
-  //////insert into sql 
+  ///DO conditions befor inserting to sql. Call sql and request for email and username to check if there are no duplicates
+
+  //insert into sql 
   let sql = `INSERT INTO account SET ? `;
   let insertInto = connection.query(sql, data, (req, res) => {
     if (req) {
       return console.error('error: ' + req.message);
     }
     console.log("INSERTED INTO DB account ");
+
   });
 
-  ///////conditions
-
-
+  status1 = 'successful'
 
   /////////
   response.json({
-    status: 'successful',
-    firstN: data.newFirst,
-    lastN: data.newLast
+    status: status1,
+    firstN: data.firstName,
+    lastN: data.lastName
   })
 
 });
 
 
-app.post('/login', (request, response) => { //use post to login 
+////LOGIN FEATURE  
+app.post('/login', (request, response) => {
   console.log('I got a login request');
   //console.log(request);
-  console.log('---------');
-  console.log(request.body);
+  // console.log('---------');
+  // console.log(request.body);
+  // console.log('--------- bodt');
+
   const data = request.body;
-  /////
+  console.log(data.username);
 
+  let status1 = 'unsuccessful';
 
+  /////GRABS PASSWORD FROM USERNAME ACCOUNT 
+  let sql = `SELECT password FROM account WHERE username = ? `;
 
-  /////
-  // ${data.newUser, data.newAddress, data.newPas, data.newFirst, data.data.newLast}
-  response.json({
-    status: 'successful',
-    firstN: data.newFirst,
-    lastN: data.newLast
+  //QUERIES USER INPUT INTO SQL 
+  let insertInto = connection.query(sql, data.username, (error, results, fields) => {
+    if (error) {
+      status1 = 'error';
+      response.json({
+        status: status1,
+      });
+      return console.error('error: ' + error.message);
+    }
+
+    console.log(results);
+
+    //CONVERTS SQL PASSWORD RESULTS FROM OBJECT TO JSON INTO A STRING
+    let passField = JSON.parse(JSON.stringify(results));
+    pass = passField[0].password;
+    console.log(`pass = ${pass}`);
+    console.log(`data.password = ${data.password}`);
+    ////
+
+    ////CHECK IF THE PASSWORD MATCHES THE USER INPUT RETURN STATUS
+    if (pass === data.password) {
+      status1 = 'successful';
+      console.log(`${status1} ${pass}`);
+
+      response.json({
+        status: status1,
+        userName: data.username,
+      });
+
+    } else {
+      response.json({
+        status: status1,
+      });
+    }
+
   });
 
-  //unstringify request.body. -->> use this module to check conditions and if somethings wrong, send a message back ==> 
 });
+
 
 
 //connection.end();
