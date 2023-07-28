@@ -61,20 +61,24 @@ app.post('/signup', (request, response) => {
   const data = request.body;
   console.log(data.firstName);
   console.log(data.lastName);
+  let status1 = 'successful';
 
   ///DO conditions befor inserting to sql. Call sql and request for email and username to check if there are no duplicates
 
   //insert into sql 
   let sql = `INSERT INTO account SET ? `;
   let insertInto = connection.query(sql, data, (req, res) => {
+   
+ 
     if (req) {
-      return console.error('error: ' + req.message);
+     status1 = 'unsuccessful';
+     return console.error('error: ' + req.message);
     }
     console.log("INSERTED INTO DB account ");
 
   });
 
-  status1 = 'successful'
+  
 
   /////////
   response.json({

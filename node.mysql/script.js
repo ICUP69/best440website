@@ -89,6 +89,10 @@ confirmSignUp.addEventListener('click', async function (e) {
     console.log("match");
     //////Check for Duplicate username and email --> return alert and delete entries --> may need access to DB
 
+
+
+
+
     //If all passes, register account
     //////CODE TO SEND DATA TO SERVER 
     
@@ -113,8 +117,10 @@ confirmSignUp.addEventListener('click', async function (e) {
     const response = await fetch('/signup', options);
     const json = await response.json();
     console.log(json);
-    console.log(json.status);
+    alert(json.status);
 
+    
+    
 
     ///////
 
