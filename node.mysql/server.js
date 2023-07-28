@@ -5,21 +5,24 @@
 //I used express cause it was easier to render the html doc 
 
 
-
 ////////////////////////////////SETUP server and connection to SQL 
-
-
 const mysql = require('mysql');
+// const mysql = require('mysql2');
 const express = require('express');
 const app = express();
 
 ///RENDER HTML DOC TO SERVER 
-app.use(express.static('.'));
-app.get('/', function (req, res) {
-  res.sendFile('index.html', { root: '.' });
-});
-////
+const path = require('path');
 
+//create path to find the index.html file to run 
+// Serve static files from the "best440website" directory
+app.use(express.static(path.join(__dirname, '..')));
+
+// Root route to serve index.html
+app.get('/', function (req, res) {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+/////////////
 
 app.use(express.json({ limit: '2 mb' }));
 
@@ -61,6 +64,8 @@ app.post('/signup', (request, response) => {
   const data = request.body;
   console.log(data.firstName);
   console.log(data.lastName);
+  let status1 = 'successful';
+
 
   ///DO conditions befor inserting to sql. Call sql and request for email and username to check if there are no duplicates
 
@@ -68,23 +73,27 @@ app.post('/signup', (request, response) => {
   let sql = `INSERT INTO account SET ? `;
   let insertInto = connection.query(sql, data, (req, res) => {
     if (req) {
+      status1 = 'Invalid username or ';
+      response.json({
+        status: status1,
+        firstN: data.firstName,
+        lastN: data.lastName
+      })    
       return console.error('error: ' + req.message);
     }
     console.log("INSERTED INTO DB account ");
 
+    response.json({
+      status: status1,
+      firstN: data.firstName,
+      lastN: data.lastName
+    })   
   });
 
-  status1 = 'successful'
 
   /////////
-  response.json({
-    status: status1,
-    firstN: data.firstName,
-    lastN: data.lastName
-  })
 
 });
-
 
 ////LOGIN FEATURE  
 app.post('/login', (request, response) => {
@@ -97,7 +106,7 @@ app.post('/login', (request, response) => {
   const data = request.body;
   console.log(data.username);
 
-  let status1 = 'unsuccessful';
+  let status1;
 
   /////GRABS PASSWORD FROM USERNAME ACCOUNT 
   let sql = `SELECT password FROM account WHERE username = ? `;
@@ -114,31 +123,38 @@ app.post('/login', (request, response) => {
 
     console.log(results);
 
-    //CONVERTS SQL PASSWORD RESULTS FROM OBJECT TO JSON INTO A STRING
-    let passField = JSON.parse(JSON.stringify(results));
-    pass = passField[0].password;
-    console.log(`pass = ${pass}`);
-    console.log(`data.password = ${data.password}`);
-    ////
-
-    ////CHECK IF THE PASSWORD MATCHES THE USER INPUT RETURN STATUS
-    if (pass === data.password) {
-      status1 = 'successful';
-      console.log(`${status1} ${pass}`);
-
+    //CHECK IF THE USERNAME EXISTS
+    if (results.length === 0) {
+      status1 = 'user_not_found';
       response.json({
         status: status1,
-        userName: data.username,
       });
-
     } else {
-      response.json({
-        status: status1,
-      });
+      //CONVERTS SQL PASSWORD RESULTS FROM OBJECT TO JSON INTO A STRING
+      let passField = JSON.parse(JSON.stringify(results));
+      pass = passField[0].password;
+      console.log(`pass = ${pass}`);
+      console.log(`data.password = ${data.password}`);
+      ////
+
+      ////CHECK IF THE PASSWORD MATCHES THE USER INPUT RETURN STATUS
+      if (pass === data.password) {
+        status1 = 'successful';
+        console.log(`${status1} ${pass}`);
+
+        response.json({
+          status: status1,
+          userName: data.username,
+        });
+
+      } else {
+        status1 = 'incorrect_password';
+        response.json({
+          status: status1,
+        });
+      }
     }
-
   });
-
 });
 
 

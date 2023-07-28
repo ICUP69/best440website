@@ -16,8 +16,8 @@ const newFirstname = document.querySelector('.new--firstname');
 const newLastname = document.querySelector('.new--lastname');
 const newEmail = document.querySelector('.new--email');
 const newUsername = document.querySelector('.new--username');
-const newPassword = document.querySelector('.new--password'); 
-const confirmPassword = document.querySelector('.confirm--password'); 
+const newPassword = document.querySelector('.new--password');
+const confirmPassword = document.querySelector('.confirm--password');
 ////User Input entries 
 
 const signUp = [newFirstname, newLastname, newEmail, newUsername, newPassword, confirmPassword];
@@ -25,7 +25,7 @@ const logIn = [usernameLogin, passwordLogin];
 
 // class accounts {
 //     #accounts = []; //private field might not need it tho cause sql :/
-    
+
 //     constructor(firstName, lastName, email, username, pin) {
 //         this.firstName = firstName;
 //         this.lastName = lastName;
@@ -68,43 +68,43 @@ backgroundWindow.addEventListener('click', function (e) {
 
 confirmSignUp.addEventListener('click', async function (e) {
     e.preventDefault();
-    firstName = newFirstname.value; 
+    firstName = newFirstname.value;
     lastName = newLastname.value;
-    email = newEmail.value; 
-    username = newUsername.value; 
+    email = newEmail.value;
+    username = newUsername.value;
     password = newPassword.value;
     cpass = confirmPassword.value;
     //Check for Unmatching password can be done here without accessing DB --> if it fails return alert and delete entries 
-    if(cpass.localeCompare(password)!= 0){
+    if (cpass.localeCompare(password) != 0) {
         console.log("dont match");
-        
+
         window.alert("passwords dont match try again!");
 
         signUp.forEach(acc => {
             acc.value = '';
         });
-        return ;
+        return;
     }
-   
+
     console.log("match");
     //////Check for Duplicate username and email --> return alert and delete entries --> may need access to DB
 
     //If all passes, register account
     //////CODE TO SEND DATA TO SERVER 
-    
+
     ///Refactored --> SQL WANTS TO USE SAME VARIABLE NAMES TO QUERY INTO DB
-    
+
 
     console.log(firstName, lastName);
     // console.log(typeof newFirst, typeof newLast);
     // console.log('this is working');
 
-    const data = { username, password, firstName, lastName, email};
+    const data = { username, password, firstName, lastName, email };
     const options = {
         method: 'POST',
         headers: {
             "Content-Type": "application/json",
-          },
+        },
         body: JSON.stringify(data)
     };
 
@@ -114,6 +114,8 @@ confirmSignUp.addEventListener('click', async function (e) {
     const json = await response.json();
     console.log(json);
     console.log(json.status);
+    alert(json.status);
+
 
 
     ///////
@@ -125,22 +127,21 @@ confirmSignUp.addEventListener('click', async function (e) {
 });
 
 
-////NOTE: PROGRAM WILL CRASH IF YOU PUT A NON EXISTING USERNAME SO MIGHT FIX LATER
 confirmLogin.addEventListener('click', async function (e) {
     //Access DB using get 
     e.preventDefault();
 
-    username = usernameLogin.value; 
+    username = usernameLogin.value;
     password = passwordLogin.value;
-    console.log(username,password);
+    console.log(username, password);
 
 
-    const data = {username, password};
+    const data = { username, password };
     const options = {
         method: 'POST',
         headers: {
             "Content-Type": "application/json",
-          },
+        },
         body: JSON.stringify(data)
     };
 
@@ -149,23 +150,20 @@ confirmLogin.addEventListener('click', async function (e) {
     console.log(json);
 
     ///RETURNS RESULTS
-    alert(json.status);
-    
+    if (json.status === "successful") {
+        alert("Login successful!");
+    } else if (json.status === "user_not_found") {
+        alert("Username not found.");
+    } else if (json.status === "incorrect_password") {
+        alert("Incorrect password.");
+    } else {
+        alert("Login failed.");
+    }
+
 
     logIn.forEach(acc => {
         acc.value = '';
     });
-    
+
 });
-
-
-
-
-
-
-
-
-
-
-
 
