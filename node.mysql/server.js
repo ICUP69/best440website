@@ -73,7 +73,7 @@ app.post('/signup', (request, response) => {
   let sql = `INSERT INTO account SET ? `;
   let insertInto = connection.query(sql, data, (req, res) => {
     if (req) {
-      status1 = 'Invalid username or ';
+      status1 = 'Invalid username or used email';
       response.json({
         status: status1,
         firstN: data.firstName,
