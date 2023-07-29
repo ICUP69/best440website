@@ -14,17 +14,3 @@ Jesse Cruz: worked on the sql prevention attacks making sure the password and th
 youtube link:
 
 https://youtu.be/oLgcbSK1ASU
-
-             
-
-             
-
-
-
-
-
-
-
-
-
-
