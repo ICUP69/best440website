@@ -9,12 +9,14 @@
     <title>Document</title>
 </head>
 
-<body>
+<body id="wrapper">
     <!-- NAVIGATION BAR -->
     <nav class="nav">
-        <ul class="nav_list">
+        <ul class="nav_list me-auto">
+            <li class="Welcome--nav "> </li>
             <li class="login_btn">Login</li>
             <li class="account_btn"> Sign Up</li>
+            <li class="signOut_btn hidden "> Sign Out</li>
         </ul>
     </nav>
 
@@ -23,17 +25,19 @@
     <!-- WINDOWS FOR LOGIN & ACCOUNT Sign up  (Refactor this Segment later?)-->
     <div class="window--login hidden">
         <h1 class="Title_form"> Welcome! </h1>
-        <div class="form--box">
+        <div class="loginForm--box">
             <form class="login_form">
                 <div class="form_structure">
-                    <label> UserName: </label>
+                    <label class="login--des"> UserName: </label>
                     <input class="username" type="text" />
                 </div>
 
                 <div class="form_structure">
-                    <label> Password: </label>
+                    <label class="login--des"> Password: </label>
                     <input class="password" type="text" />
                 </div>
+
+                <p class="errorLgn"> </p>
 
                 <button class="btn1"> Login </button>
             </form>
@@ -74,34 +78,44 @@
                 <input class="confirm--password" type="text" />
             </div>
 
-            <button id="btn2" class="btn2"> Sign up </button>
+            <button class="btn2"> Sign up </button>
 
         </form>
-        <script>
-	// let accounts = [];
-	// const addAcc = (ev)=>{
-    //         ev.preventDefault();  //to stop the form submitting
-    //         let account = {
-    //             firstname: document.getElementById('fname').value,
-    //             lastname: document.getElementById('lname').value,
-    //             email: document.getElementById('email').value,
-    //             username: document.getElementById('uname').value,
-    //             pin: document.getElementById('pin').value,
 
 
-    //         }
-	// accounts.push(account);
-	// document.querySelector('form').reset()
-	//  localStorage.setItem('accountlist', JSON.stringify(accounts) );
-    //     }
-    //     document.addEventListener('DOMContentLoaded', ()=>{
-    //         document.getElementById('btn2').addEventListener('click', addAcc);
-    //     });
-
-        </script>
 
     </div>
     <!-- End of login/signup segment  -->
+
+    <!-- SEARCH FORM  & Body-->
+    <div class="user--page hidden">
+        <div class="user--Form">
+            <form> 
+                <div class="title">
+                    <label style="padding-right: 10px;"> Title:  </label>
+                    <input class="title-input" size="20" style="font-size: 28px;" type="text"> 
+                </div>
+
+                <div class="description">
+                    <label style="padding-right: 10px;"> Description:  </label>
+                    <input class="desc-input" size="16" style="font-size: 25px;" type="text" > 
+                </div>
+
+                <div class="category">
+                    <label style="padding-right: 10px;"> Category:  </label>
+                    <input class="cate-input" size="18" style="font-size: 25px;" type="text"> 
+                </div>
+
+                <div class="price">
+                    <label style="padding-right: 10px;"> Price:  </label>
+                    <input class="price-input" size="10" style="font-size: 25px;" type="text"> 
+                </div>
+
+                <button class="search--Btn"> Search </button>
+            </form>
+        </div>
+
+    </div>
 
     <script src="script.js"></script>
 

@@ -1,12 +1,15 @@
 //Variabless
 const loginBtn = document.querySelector('.login_btn');
 const accountBtn = document.querySelector('.account_btn');
+const signOutBtn = document.querySelector('.signOut_btn');
 const loginWindow = document.querySelector('.window--login');
 const signupWindow = document.querySelector('.window--signup');
 const backgroundWindow = document.querySelector('.window--background');
+const welcomeUser = document.querySelector('.Welcome--nav');
 
 const confirmSignUp = document.querySelector('.btn2');
 const confirmLogin = document.querySelector('.btn1');
+const search = document.querySelector('.search--Btn');
 
 
 ///All User Input --> call (variable).value to access it's data 
@@ -18,22 +21,20 @@ const newEmail = document.querySelector('.new--email');
 const newUsername = document.querySelector('.new--username');
 const newPassword = document.querySelector('.new--password');
 const confirmPassword = document.querySelector('.confirm--password');
-////User Input entries 
+const errorLoginMsg = document.querySelector('.errorLgn');
+const userPage = document.querySelector('.user--page');
+
+///User form inputs 
+
+const searchTitle = document.querySelector('.title-input');
+const searchDescription = document.querySelector('.desc-input');
+const searchCategory = document.querySelector('.cate-input');
+const searchPrice = document.querySelector('.price-input');
+
+
 
 const signUp = [newFirstname, newLastname, newEmail, newUsername, newPassword, confirmPassword];
 const logIn = [usernameLogin, passwordLogin];
-
-// class accounts {
-//     #accounts = []; //private field might not need it tho cause sql :/
-
-//     constructor(firstName, lastName, email, username, pin) {
-//         this.firstName = firstName;
-//         this.lastName = lastName;
-//         this.email = email;
-//         this.username = username;
-//         this.pin = pin;
-//     }
-// };
 
 //Functions
 const openWindow = (l) => {
@@ -41,10 +42,33 @@ const openWindow = (l) => {
     backgroundWindow.classList.remove('hidden');
 };
 
+const loginError = (l) => {
+    errorLoginMsg.textContent = l;
+    errorLoginMsg.classList.remove('hidden');
+};
+
 const closeWindow = () => {
     if (!loginWindow.classList.contains('hidden')) loginWindow.classList.add('hidden');
     if (!signupWindow.classList.contains('hidden')) signupWindow.classList.add('hidden');
+    if (!errorLoginMsg.classList.contains('hidden')) errorLoginMsg.classList.add('hidden');
     backgroundWindow.classList.add('hidden');
+};
+
+const displayForm = () => {
+
+};
+
+let currentUser;
+const LoggedIn = (user) => {
+    currentUser = user;
+    closeWindow();
+    signOutBtn.classList.remove('hidden');
+    userPage.classList.remove('hidden');
+
+    accountBtn.classList.add('hidden');
+    loginBtn.classList.add('hidden');
+    welcomeUser.textContent = `Welcome back ${user}`;
+
 };
 
 ///Event Listeners
@@ -63,7 +87,6 @@ backgroundWindow.addEventListener('click', function (e) {
     e.preventDefault();
     closeWindow();
 });
-
 
 
 confirmSignUp.addEventListener('click', async function (e) {
@@ -108,17 +131,11 @@ confirmSignUp.addEventListener('click', async function (e) {
         body: JSON.stringify(data)
     };
 
-
-
     const response = await fetch('/signup', options);
     const json = await response.json();
     console.log(json);
     console.log(json.status);
     alert(json.status);
-
-
-
-    ///////
 
     signUp.forEach(acc => {
         acc.value = '';
@@ -151,11 +168,12 @@ confirmLogin.addEventListener('click', async function (e) {
 
     ///RETURNS RESULTS
     if (json.status === "successful") {
+        LoggedIn(json.userName);
         alert("Login successful!");
     } else if (json.status === "user_not_found") {
-        alert("Username not found.");
+        loginError('Error: Username not found');
     } else if (json.status === "incorrect_password") {
-        alert("Incorrect password.");
+        loginError('Error: Incorrect password');
     } else {
         alert("Login failed.");
     }
@@ -166,4 +184,6 @@ confirmLogin.addEventListener('click', async function (e) {
     });
 
 });
+
+
 
