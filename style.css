@@ -255,58 +255,85 @@
   margin: 15px;
 }
 
-.user--page{
-  position: grid; 
+.user--page {
+  position: relative;
 }
 
-.user--Form{
-  padding: 90px 20px; 
+.user--Form {
+  position: absolute;
+  padding: 90px 20px;
   /* margin-top: 5%; */
-  margin: 5% 0px 0px 23px;
-  height: 600px; 
-  width: 500px; 
+  /* margin-left: 10px; */
+  margin: 50px 10px 0px 10px;
+  height: 600px;
+  width: 500px;
   border-radius: 15px;
   background-color: rgb(255, 110, 64);
   z-index: 1000;
-  box-shadow: 10px 10px; 
+  box-shadow: 10px 10px;
   transition: all 3s;
 }
 
-.title{
+.title {
   display: inline-flex;
   font-size: 35px;
-  top: 20%; 
+  top: 20%;
 }
 
 /* Gonna refactor this later  */
-.description{
+.description {
   position: relative;
   display: inline-flex;
-  padding: 50px 0px 0px 20px; 
+  padding: 50px 0px 0px 20px;
   font-size: 25px;
 }
 
-.category{
+.category {
   position: relative;
   display: inline-flex;
-  padding: 50px 0px 0px 20px; 
+  padding: 50px 0px 0px 20px;
   font-size: 25px;
 }
 
-.price{
+.price {
   position: relative;
   display: inline-flex;
-  padding: 50px 0px 0px 20px; 
+  padding: 50px 0px 0px 20px;
   font-size: 25px;
 }
 
-.search--Btn{
-  position: absolute; 
-  padding: 20px 60px; 
+.search--Btn {
+  position: absolute;
+  padding: 20px 60px;
   background-color: chartreuse;
   font-size: 20px;
-  margin: 150px 0px 0px -130px; 
+  margin: 150px 0px 0px -130px;
   font-size: 20px;
   cursor: pointer;
-  border-radius: 15px;  
+  border-radius: 15px;
 }
+
+.table--display {
+  position: absolute;
+  /* display: grid; */
+  left: 40%;
+  margin: 40px 100px 0px 0px;
+  /* margin: 100px 100px 0px 50%; */
+  /* padding: 20px 0px;  */
+  width: 900px;
+  height: 700px;
+  background-color: white;
+  overflow: scroll;
+}
+
+.table--row {
+  display: grid; 
+  padding: 12px 30px;
+  font-size: 30px;
+  background-color: white;
+  border: 1px solid black
+}
+
+/* .prodcut--description{
+  display: grid; 
+} */

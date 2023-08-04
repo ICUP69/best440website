@@ -70,15 +70,15 @@ app.post('/signup', (request, response) => {
   //insert into sql 
   let sql = `INSERT INTO account SET ? `;
   let insertInto = connection.query(sql, data, (req, res) => {
-   
- 
+
+
     if (req) {
       status1 = 'Invalid username or used email';
       response.json({
         status: status1,
         firstN: data.firstName,
         lastN: data.lastName
-      })    
+      })
       return console.error('error: ' + req.message);
     }
     console.log("INSERTED INTO DB account ");
@@ -87,7 +87,7 @@ app.post('/signup', (request, response) => {
       status: status1,
       firstN: data.firstName,
       lastN: data.lastName
-    })   
+    })
   });
 
 
@@ -156,6 +156,55 @@ app.post('/login', (request, response) => {
     }
   });
 });
+
+
+///////////////Search/ Table function 
+
+app.post('/search', (request, response) => {
+  const data = request.body;
+  console.log(data);
+
+
+  
+
+  
+
+  //turn category into a array of string 
+  // test = data.category.split(' ');
+  // console.log(test);
+
+
+  //let sql = `SELECT * FROM account`;
+
+  //QUERIES USER INPUT INTO SQL 
+  // let insertInto = connection.query(sql, data.username, (error, results, fields) => {
+  //   if (error) {
+  //     status1 = 'error';
+  //     response.json({
+  //       status: status1,
+  //     });
+  //     return console.error('error: ' + error.message);
+  //   }
+
+
+  //   let passField = JSON.parse(JSON.stringify(results));
+  //   console.log(passField);
+  //   pass = passField[0];
+  //   pass1 = passField[1];
+  //   pass2 = passField[2];
+  //   pass3 = passField[3];
+
+  //   console.log(pass);
+
+
+  //   response.json({
+  //     result: results,
+  //   });
+  // });
+
+
+});
+
 
 
 

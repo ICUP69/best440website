@@ -25,11 +25,12 @@ const errorLoginMsg = document.querySelector('.errorLgn');
 const userPage = document.querySelector('.user--page');
 
 ///User form inputs 
-
 const searchTitle = document.querySelector('.title-input');
 const searchDescription = document.querySelector('.desc-input');
 const searchCategory = document.querySelector('.cate-input');
 const searchPrice = document.querySelector('.price-input');
+
+const table = document.querySelector('.table--display');
 
 
 
@@ -117,11 +118,6 @@ confirmSignUp.addEventListener('click', async function (e) {
 
     ///Refactored --> SQL WANTS TO USE SAME VARIABLE NAMES TO QUERY INTO DB
 
-
-    console.log(firstName, lastName);
-    // console.log(typeof newFirst, typeof newLast);
-    // console.log('this is working');
-
     const data = { username, password, firstName, lastName, email };
     const options = {
         method: 'POST',
@@ -182,6 +178,47 @@ confirmLogin.addEventListener('click', async function (e) {
     logIn.forEach(acc => {
         acc.value = '';
     });
+
+});
+
+
+/////Search table function 
+search.addEventListener('click', async function(e){
+    e.preventDefault();
+
+    itemName = searchTitle.value;
+    itemDescription = searchDescription.value;
+    itemPrice = searchPrice.value;
+    category = searchCategory.value;
+
+    console.log(category);
+    
+
+    ///Send data we used for search option to backend and it will return said tables? 
+    // const data = { title, description, category, price };
+    const data = {itemName, itemDescription, itemPrice, category};
+    console.log(data);
+    const options = {
+        method: 'POST', 
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data)
+    };
+    
+    const response = await fetch('/search', options);
+    const json = await response.json();
+    console.log(json);
+
+    console.log(json.result.length); 
+   
+    // for(i = 0; i < json.result.length; i++){
+    //     let html = ` 
+        
+        
+    //     `
+    //     console.log(json.result[i]);
+    // }
 
 });
 
