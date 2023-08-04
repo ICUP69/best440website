@@ -1,0 +1,56 @@
+use projectdb ; 
+
+CREATE TABLE account(
+username varchar(20) NOT NULL,
+password varchar(20) NOT NULL,
+firstName varchar(20) NOT NULL,
+lastName varchar(20) NOT NULL,
+email varchar(20) NOT NULL,
+primary key(username), 
+unique key email(email)
+);
+
+INSERT INTO account (
+username,
+password,
+firstName,
+lastName, 
+email
+)
+VALUES (
+'JaunitoGaming',
+'Jaunito1234',
+'Juanito',
+'Gabriel',
+'JuanitoGaming@gmail.com'
+)
+
+
+CREATE TABLE items (
+  itemID int NOT NULL AUTO_INCREMENT,
+  itemName varchar(45) DEFAULT NULL,
+  itemPrice varchar(20) DEFAULT NULL,
+  itemDescription varchar(45) DEFAULT NULL,
+  userID varchar(20) NOT NULL,
+  PRIMARY KEY (itemID,userID),
+  KEY item_userID_idx (userID),
+  CONSTRAINT item_userID FOREIGN KEY (userID) REFERENCES account (username)
+) ENGINE=InnoDB AUTO_INCREMENT=1118 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE review (
+  idreview int NOT NULL,
+  username varchar(45) NOT NULL,
+  review varchar(45) DEFAULT NULL,
+  KEY itemID_reviews_idx (idreview),
+  KEY user_review_idx (username),
+  CONSTRAINT itemID_reviews FOREIGN KEY (idreview) REFERENCES items (itemID),
+  CONSTRAINT user_review FOREIGN KEY (username) REFERENCES account (username)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE categories (
+  ID int NOT NULL,
+  categories varchar(45) DEFAULT NULL,
+  KEY itemID_categories (ID),
+  CONSTRAINT itemID_categories FOREIGN KEY (ID) REFERENCES items (itemID)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+had to do it in this order
+because the other tables referenced the items table

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="script.js"></script>
+    <link rel="stylesheet" href="style.css" />
+    <title>Document</title>
+</head>
+
+<body id="wrapper">
+    <!-- NAV BAR -->
+    <nav class="nav">
+        <ul class="nav_list me-auto">
+            <li class="Welcome--nav "> </li>
+            <li class="login_btn">Login</li>
+            <li class="account_btn"> Sign Up</li>
+            <li class="signOut_btn hidden "> Sign Out</li>
+        </ul>
+    </nav>
+
+    <div class="window--background hidden"> </div>
+    <!-- WINDOWS FOR LOGIN & ACCOUNT Sign up  (Refactor this Segment later?)-->
+    <div class="window--login hidden">
+        <h1 class="Title_form"> Welcome! </h1>
+        <div class="loginForm--box">
+            <form class="login_form">
+                <div class="form_structure">
+                    <label class="login--des"> UserName: </label>
+                    <input class="username" type="text" />
+                </div>
+
+                <div class="form_structure">
+                    <label class="login--des"> Password: </label>
+                    <input class="password" type="text" />
+                </div>
+
+                <p class="errorLgn"> </p>
+
+                <button class="btn1"> Login </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="window--signup hidden ">
+        <h1 class="Title_form"> Sign Up </h1>
+        <form class="Account_form">
+
+            <div class="form_structure">
+                <label> Name: </label>
+                <input class="new--firstname" type="text" id="fname" />
+            </div>
+
+            <div class="form_structure">
+                <label> LastName: </label>
+                <input class="new--lastname" type="text" id="lname" />
+            </div>
+
+            <div class="form_structure">
+                <label> Email: </label>
+                <input class="new--email" type="text" id="email" />
+            </div>
+
+            <div class="form_structure">
+                <label> UserName: </label>
+                <input class="new--username" type="text" id="uname" />
+            </div>
+
+            <div class="form_structure">
+                <label> Password: </label>
+                <input class="new--password" type="text" id="pin" />
+            </div>
+
+            <div class="form_structure">
+                <label> Confirm Password: </label>
+                <input class="confirm--password" type="text" />
+            </div>
+
+            <button class="btn2"> Sign up </button>
+        </form>
+    </div>
+    <!-- End of login/signup segment  -->
+</body>
+</html>
