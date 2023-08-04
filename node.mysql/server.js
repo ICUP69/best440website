@@ -1,28 +1,23 @@
-///Terminal --> 
-//npm init 
-//npm install --save mysql express  --> generate node_modules and package-lock.json
-
-//I used express cause it was easier to render the html doc 
-
-
-
-////////////////////////////////SETUP server and connection to SQL 
-
-
+//const mysql = require('mysql');
 const mysql = require('mysql2');
+
 const express = require('express');
 const app = express();
 
 ///RENDER HTML DOC TO SERVER 
-app.use(express.static('.'));
-app.get('.', function (req, res) {
-  res.sendFile('index.html', { root: '.' });
-});
-////
+const path = require('path');
 
+
+//create path to find the index.html file to run 
+// Serve static files from the "best440website" directory
+app.use(express.static(path.join(__dirname, '..')));
+
+// Root route to serve index.html
+app.get('/', function (req, res) {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 app.use(express.json({ limit: '2 mb' }));
-
 app.listen(3000, () => {
   console.log(`The server is now running`);
 });
@@ -36,70 +31,58 @@ const connection = mysql.createConnection({
 });
 
 connection.connect(function (err) {
-  // if (err) throw err; 
   if (err) {
     return console.error('error: ' + err.message);
   }
-
   console.log("Connected to mysql!");
 });
 
 
+//REQUESTS AND GETS 
 
-
-
-////////////////////////////////REQUESTS AND GETS 
-
-
-
-/////SIGN IN FEATURE
+//SIGN IN FEATURE
 app.post('/signup', (request, response) => {
   console.log('I got a new login request');
-  //console.log(request);
   console.log('---------');
   console.log(request.body);
   const data = request.body;
   console.log(data.firstName);
   console.log(data.lastName);
-
-  ///DO conditions befor inserting to sql. Call sql and request for email and username to check if there are no duplicates
+  let status1 = 'successful';
 
   //insert into sql 
   let sql = `INSERT INTO account SET ? `;
   let insertInto = connection.query(sql, data, (req, res) => {
+
     if (req) {
+      status1 = 'Invalid username or used email';
+      response.json({
+        status: status1,
+        firstN: data.firstName,
+        lastN: data.lastName
+      })
       return console.error('error: ' + req.message);
     }
     console.log("INSERTED INTO DB account ");
 
+    response.json({
+      status: status1,
+      firstN: data.firstName,
+      lastN: data.lastName
+    })
   });
-
-  status1 = 'successful'
-
-  /////////
-  response.json({
-    status: status1,
-    firstN: data.firstName,
-    lastN: data.lastName
-  })
-
 });
 
 
 ////LOGIN FEATURE  
 app.post('/login', (request, response) => {
   console.log('I got a login request');
-  //console.log(request);
-  // console.log('---------');
-  // console.log(request.body);
-  // console.log('--------- bodt');
-
   const data = request.body;
   console.log(data.username);
 
-  let status1 = 'unsuccessful';
+  let status1;
 
-  /////GRABS PASSWORD FROM USERNAME ACCOUNT 
+  //GRABS PASSWORD FROM USERNAME ACCOUNT 
   let sql = `SELECT password FROM account WHERE username = ? `;
 
   //QUERIES USER INPUT INTO SQL 
@@ -126,8 +109,9 @@ app.post('/login', (request, response) => {
       pass = passField[0].password;
       console.log(`pass = ${pass}`);
       console.log(`data.password = ${data.password}`);
-      
-      //CHECK IF THE PASSWORD MATCHES THE USER INPUT AND RETURN STATUS
+      ////
+
+      ////CHECK IF THE PASSWORD MATCHES THE USER INPUT RETURN STATUS
       if (pass === data.password) {
         status1 = 'successful';
         console.log(`${status1} ${pass}`);
@@ -136,6 +120,7 @@ app.post('/login', (request, response) => {
           status: status1,
           userName: data.username,
         });
+
       } else {
         status1 = 'incorrect_password';
         response.json({
@@ -147,6 +132,80 @@ app.post('/login', (request, response) => {
 });
 
 
+//                                                                                      Add items to the database
+// POST route to handle form submission
+app.post('/submit-form', (req, res) => {
+  // Access form data using req.body
+  const itemName = req.body.itemName;
+  const itemDescription = req.body.itemDescription;
+  const itemCategory = req.body.itemCategory;
+  const itemPrice = req.body.itemPrice;
+  const userID = "Mysto"; // Replace this with the actual user ID (if you have a login system)
+
+  // Prepare the SQL statement
+  const sql = `INSERT INTO items (itemName, itemDescription, itemPrice, userID)
+              VALUES (?, ?, ?, ?)`;
+
+  // Execute the SQL statement with parameters
+  connection.query(sql, [itemName, itemDescription, itemPrice, userID], (err, result) => {
+    if (err) {
+      console.error('Error inserting item: ' + err.message);
+      res.send('Error inserting item');
+    } else {
+      const itemID = result.insertId; // Get the auto-incremented itemID after the insert
+      console.log('Form successfully submitted');
+      res.json({
+        status: "Form Successfully submitted"
+      });
+    }
+  });
+});
+
+///////////////Search/ Table function 
+
+app.post('/search', (request, response) => {
+  const data = request.body;
+  console.log(data);
+
+
+  
+
+  
+
+  //turn category into a array of string 
+  // test = data.category.split(' ');
+  // console.log(test);
+
+
+  //let sql = `SELECT * FROM account`;
+
+  //QUERIES USER INPUT INTO SQL 
+  // let insertInto = connection.query(sql, data.username, (error, results, fields) => {
+  //   if (error) {
+  //     status1 = 'error';
+  //     response.json({
+  //       status: status1,
+  //     });
+  //     return console.error('error: ' + error.message);
+  //   }
+
+
+  //   let passField = JSON.parse(JSON.stringify(results));
+  //   console.log(passField);
+  //   pass = passField[0];
+  //   pass1 = passField[1];
+  //   pass2 = passField[2];
+  //   pass3 = passField[3];
+
+  //   console.log(pass);
+
+
+  //   response.json({
+  //     result: results,
+  //   });
+  // });
+
+
+});
 
 //connection.end();
-
