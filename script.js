@@ -72,20 +72,12 @@ const LoggedIn = (user) => {
 };
 
 ///Event Listeners
-signOutBtn.addEventListener('click',  async function (e) {
+signOutBtn.addEventListener('click', function (e) {
     e.preventDefault();
-    signOutBtn.classList.add('hidden');
-   
+    signOutBtn.classList.add('hidden');  
     welcomeUser.textContent = '';
-
     accountBtn.classList.remove('hidden');
     loginBtn.classList.remove('hidden');
-
-
-    
-    
-
-
 });
 
 loginBtn.addEventListener('click', function (e) {
