@@ -164,49 +164,77 @@ app.post('/search', (request, response) => {
   const data = request.body;
   console.log(data);
 
-
-  
-
-  
+  const search = data.itemName;
+  const category = data.category;
+  const price = data.itemPrice;
+  let e = ` `;
 
   //turn category into a array of string 
-  // test = data.category.split(' ');
-  // console.log(test);
+  test = data.category.split(' ');
+  console.log(test);
+
+  test.forEach(value => {
+    e = ` or (categories = '${value}')` + e;
+  });
+
+  // console.log(e);
 
 
-  //let sql = `SELECT * FROM account`;
-
-  //QUERIES USER INPUT INTO SQL 
-  // let insertInto = connection.query(sql, data.username, (error, results, fields) => {
-  //   if (error) {
-  //     status1 = 'error';
-  //     response.json({
-  //       status: status1,
-  //     });
-  //     return console.error('error: ' + error.message);
-  //   }
+  // let sql_1 = `SELECT DISTINCT itemName
+  //           FROM items AS i
+  //           WHERE EXISTS (SELECT categories
+  //           FROM categories AS c
+  //           WHERE (c.ID = i.itemID) AND ((i.itemName = '${search}') or (i.itemPrice >= '${price}') ${e} ) ); `;
 
 
-  //   let passField = JSON.parse(JSON.stringify(results));
-  //   console.log(passField);
-  //   pass = passField[0];
-  //   pass1 = passField[1];
-  //   pass2 = passField[2];
-  //   pass3 = passField[3];
 
-  //   console.log(pass);
+  ///RETRIEVE SEARCH FOR NAME, PRICE AND CATEGORY AND RETURNS REMAINING NOT LISTED 
+  let sql_1 = `SELECT DISTINCT *
+  FROM items AS i 
+  WHERE NOT EXISTS (SELECT categories 
+  FROM categories AS c 
+  WHERE (c.ID = i.itemID) 
+  AND ( (i.itemName = '${search}') ${e} ) )
+  union all 
+  SELECT DISTINCT * 
+  FROM items AS i 
+  WHERE EXISTS (SELECT categories 
+  FROM categories AS c 
+  WHERE (c.ID = i.itemID) 
+  AND ( (i.itemName = '${search}') ${e} ) );`;
 
+  let insertInto = connection.query(sql_1, (error, results, fields) => {
+    if (error) {
+      status1 = 'error';
+      response.json({
+        status: status1,
+      });
+      return console.error('error: ' + error.message);
+    }
 
-  //   response.json({
-  //     result: results,
-  //   });
-  // });
+    console.log('OUTPUT');
+    console.log(results);   
+    let passField = JSON.parse(JSON.stringify(results));
+    console.log(passField);
 
+    response.json({
+      data: passField,
+    });
+
+  });
 
 });
 
 
-
-
 //connection.end();
+///JUST AS A REFERENCE FOR LATER 
+// <div class="table--row">
+//                 <div class="product--name">DEMO ITEM </div>
+//                 <div class="prodcut--description">
+//                     <div class="product--price"> Price: 2.30</div>
+//                     <div class="product--ID"> ID: 203020</div>
+//                 </div>
+
+//                 <button class="review_btn"> view description </button>
+//             </div>
 

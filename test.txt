@@ -24,3 +24,18 @@ VALUES (
 'Gabriel',
 'JuanitoGaming@gmail.com'
 )
+
+
+CREATE TABLE `projectdb`.`items` (
+  `itemID` INT NOT NULL AUTO_INCREMENT,
+  `itemName` VARCHAR(45) NULL,
+  `itemPrice` INT NULL,
+  `itemDescription` VARCHAR(45) NULL,
+  `userID` VARCHAR(20) NOT NULL,
+  PRIMARY KEY (`itemID`, `userID`),
+  INDEX `item_userID_idx` (`userID` ASC) VISIBLE,
+  CONSTRAINT `item_userID`
+    FOREIGN KEY (`userID`)
+    REFERENCES `projectdb`.`account` (`username`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
