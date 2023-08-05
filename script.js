@@ -25,13 +25,12 @@ const errorLoginMsg = document.querySelector('.errorLgn');
 const userPage = document.querySelector('.user--page');
 
 ///User form inputs 
+
 const searchTitle = document.querySelector('.title-input');
 const searchDescription = document.querySelector('.desc-input');
 const searchCategory = document.querySelector('.cate-input');
 const searchPrice = document.querySelector('.price-input');
-
 const table = document.querySelector('.table--display');
-
 
 
 const signUp = [newFirstname, newLastname, newEmail, newUsername, newPassword, confirmPassword];
@@ -73,6 +72,21 @@ const LoggedIn = (user) => {
 };
 
 ///Event Listeners
+signOutBtn.addEventListener('click',  async function (e) {
+    e.preventDefault();
+    signOutBtn.classList.add('hidden');
+   
+    welcomeUser.textContent = '';
+
+    accountBtn.classList.remove('hidden');
+    loginBtn.classList.remove('hidden');
+
+
+    
+    
+
+
+});
 
 loginBtn.addEventListener('click', function (e) {
     e.preventDefault();
@@ -117,6 +131,11 @@ confirmSignUp.addEventListener('click', async function (e) {
     //////CODE TO SEND DATA TO SERVER 
 
     ///Refactored --> SQL WANTS TO USE SAME VARIABLE NAMES TO QUERY INTO DB
+
+
+    console.log(firstName, lastName);
+    // console.log(typeof newFirst, typeof newLast);
+    // console.log('this is working');
 
     const data = { username, password, firstName, lastName, email };
     const options = {
@@ -178,7 +197,6 @@ confirmLogin.addEventListener('click', async function (e) {
     logIn.forEach(acc => {
         acc.value = '';
     });
-
 });
 
 
@@ -236,7 +254,6 @@ search.addEventListener('click', async function(e){
     //     `
     //     console.log(json.result[i]);
     // }
-
 });
 
 
