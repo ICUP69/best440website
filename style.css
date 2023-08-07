@@ -257,10 +257,12 @@
 
 .user--page {
   position: relative;
+  display: flex;
 }
 
 .user--Form {
-  position: absolute;
+  flex:1;
+  position: relative;
   padding: 90px 20px;
   /* margin-top: 5%; */
   /* margin-left: 10px; */
@@ -330,16 +332,11 @@
 }
 
 .table--display {
-  position: absolute;
+  position: relative;
   /* display: grid; */
-  left: 40%;
-  margin: 40px 100px 0px 0px;
-  /* margin: 100px 100px 0px 50%; */
-  /* padding: 20px 0px;  */
-  width: 900px;
-  height: 700px;
-  background-color: white;
+  flex: 1;
   overflow: scroll;
+  border: solid black;
 }
 
 .table--row {
@@ -349,7 +346,3 @@
   background-color: white;
   border: 1px solid black
 }
-
-/* .prodcut--description{
-  display: grid; 
-} */

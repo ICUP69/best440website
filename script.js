@@ -222,5 +222,31 @@ search.addEventListener('click', async function(e){
     const response = await fetch('/search', options);
     const json = await response.json();
     console.log(json);
-    console.log(json.result.length); 
+
+    dataCopy = json.data;
+
+    dataCopy.forEach(data => {
+        console.log(data.itemName);
+        let html = 
+        ` <div class="table--row">
+        <div class="product--name">${data.itemName} </div>
+        <div class="prodcut--description">
+            <div class="product--price"> Price: $ ${data.itemPrice}  </div>
+            <div class="product--ID"> ID: ${data.itemID}</div>
+            <div class="product--I"> Seller: ${data.userID}</div>
+            <div class="product--d"> Description: ${data.itemDescription}</div>
+        </div>
+        <button> view Reviews </button>
+        </div>`;
+
+        table.insertAdjacentHTML('afterbegin', html);
+    })
+   
+    // for(i = 0; i < json.result.length; i++){
+    //     let html = ` 
+        
+        
+    //     `
+    //     console.log(json.result[i]);
+    // }
 });

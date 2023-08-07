@@ -1,8 +1,8 @@
 //const mysql = require('mysql');
 const mysql = require('mysql2');
-
 const express = require('express');
 const app = express();
+
 
 ///RENDER HTML DOC TO SERVER 
 const path = require('path');
@@ -136,10 +136,8 @@ app.post('/login', (request, response) => {
 // POST route to handle form submission
 app.post('/submit-form', (req, res) => {
   // Access form data using req.body
-  const itemName = req.body.itemName;
-  const itemDescription = req.body.itemDescription;
-  const itemCategory = req.body.itemCategory;
-  const itemPrice = req.body.itemPrice;
+  const newitemData = req.body;
+  
   const userID = "Mysto"; // Replace this with the actual user ID (if you have a login system)
 
   // Prepare the SQL statement
@@ -147,13 +145,14 @@ app.post('/submit-form', (req, res) => {
               VALUES (?, ?, ?, ?)`;
 
   // Execute the SQL statement with parameters
-  connection.query(sql, [itemName, itemDescription, itemPrice, userID], (err, result) => {
+  connection.query(sql, [newitemData.itemName, newitemData.itemDescription, newitemData.itemPrice, userID], (err, result) => {
     if (err) {
       console.error('Error inserting item: ' + err.message);
       res.send('Error inserting item');
     } else {
       const itemID = result.insertId; // Get the auto-incremented itemID after the insert
       console.log('Form successfully submitted');
+      console.log("ID Number: " + itemID + " Title: " + newitemData.itemName + " Description: " +newitemData.itemDescription + " Price: " + newitemData.itemPrice);
       res.json({
         status: "Form Successfully submitted"
       });
@@ -166,6 +165,67 @@ app.post('/submit-form', (req, res) => {
 app.post('/search', (request, response) => {
   const data = request.body;
   console.log(data);
+
+  const search = data.itemName;
+  const category = data.category;
+  const price = data.itemPrice;
+  let e = ` `;
+
+  //turn category into a array of string 
+  test = data.category.split(' ');
+  console.log(test);
+
+  test.forEach(value => {
+    e = ` or (categories = '${value}')` + e;
+  });
+
+  // console.log(e);
+
+
+  // let sql_1 = `SELECT DISTINCT itemName
+  //           FROM items AS i
+  //           WHERE EXISTS (SELECT categories
+  //           FROM categories AS c
+  //           WHERE (c.ID = i.itemID) AND ((i.itemName = '${search}') or (i.itemPrice >= '${price}') ${e} ) ); `;
+
+
+
+  ///RETRIEVE SEARCH FOR NAME, PRICE AND CATEGORY AND RETURNS REMAINING NOT LISTED 
+  let sql_1 = `SELECT DISTINCT *
+  FROM items AS i 
+  WHERE NOT EXISTS (SELECT categories 
+  FROM categories AS c 
+  WHERE (c.ID = i.itemID) 
+  AND ( (i.itemName = '${search}') ${e} ) )
+  union all 
+  SELECT DISTINCT * 
+  FROM items AS i 
+  WHERE EXISTS (SELECT categories 
+  FROM categories AS c 
+  WHERE (c.ID = i.itemID) 
+  AND ( (i.itemName = '${search}') ${e} ) );`;
+
+  let insertInto = connection.query(sql_1, (error, results, fields) => {
+    if (error) {
+      status1 = 'error';
+      response.json({
+        status: status1,
+      });
+      return console.error('error: ' + error.message);
+    }
+
+    console.log('OUTPUT');
+    console.log(results);   
+    let passField = JSON.parse(JSON.stringify(results));
+    console.log(passField);
+
+    response.json({
+      data: passField,
+    });
+
+  });
+
+});
 
 
   
@@ -206,6 +266,5 @@ app.post('/search', (request, response) => {
   // });
 
 
-});
 
 //connection.end();
