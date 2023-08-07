@@ -104,8 +104,6 @@ app.post('/login', (request, response) => {
   // console.log('--------- bodt');
 
   const data = request.body;
-  console.log(data.username);
-
   let status1;
 
   /////GRABS PASSWORD FROM USERNAME ACCOUNT 
@@ -121,7 +119,6 @@ app.post('/login', (request, response) => {
       return console.error('error: ' + error.message);
     }
 
-    console.log(results);
 
     //CHECK IF THE USERNAME EXISTS
     if (results.length === 0) {
@@ -133,14 +130,14 @@ app.post('/login', (request, response) => {
       //CONVERTS SQL PASSWORD RESULTS FROM OBJECT TO JSON INTO A STRING
       let passField = JSON.parse(JSON.stringify(results));
       pass = passField[0].password;
-      console.log(`pass = ${pass}`);
-      console.log(`data.password = ${data.password}`);
+      // console.log(`pass = ${pass}`);
+      // console.log(`data.password = ${data.password}`);
       ////
 
       ////CHECK IF THE PASSWORD MATCHES THE USER INPUT RETURN STATUS
       if (pass === data.password) {
         status1 = 'successful';
-        console.log(`${status1} ${pass}`);
+        // console.log(`${status1} ${pass}`);
 
         response.json({
           status: status1,
@@ -212,10 +209,8 @@ app.post('/search', (request, response) => {
       return console.error('error: ' + error.message);
     }
 
-    console.log('OUTPUT');
-    console.log(results);   
     let passField = JSON.parse(JSON.stringify(results));
-    console.log(passField);
+    // console.log(passField);
 
     response.json({
       data: passField,
@@ -225,6 +220,36 @@ app.post('/search', (request, response) => {
 
 });
 
+                                                                                 
+// POST route to handle form submission
+app.post('/submit-form', (req, res) => {
+  // Access form data using req.body
+  const itemName = req.body.itemName;
+  const itemDescription = req.body.itemDescription;
+  const itemCategory = req.body.itemCategory;
+  const itemPrice = req.body.itemPrice;
+  const userID = req.body.currentUser; // Replace this with the actual user ID (if you have a login system)
+  console.log(`this is the ${userID}`);
+
+  // Prepare the SQL statement
+  const sql = `INSERT INTO items (itemName, itemDescription, itemPrice, userID)
+              VALUES (?, ?, ?, ?)`;
+
+  // Execute the SQL statement with parameters
+  connection.query(sql, [itemName, itemDescription, itemPrice, userID], (err, result) => {
+    if (err) {
+      console.error('Error inserting item: ' + err.message);
+      res.send('Error inserting item');
+    } else {
+      console.log(result);
+      //const itemID = result.insertId; // Get the auto-incremented itemID after the insert
+      console.log('Form successfully submitted');
+      res.json({
+        status: "Form Successfully submitted"
+      });
+    }
+  });
+});
 
 //connection.end();
 ///JUST AS A REFERENCE FOR LATER 

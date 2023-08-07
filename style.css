@@ -313,6 +313,16 @@
   border-radius: 15px;
 }
 
+.add--Btn {
+  position: relative;
+  display: inline-flex;
+  left: 60px;
+  padding: 20px 20px;  
+  background-color: crimson;
+  font-size: 20px;
+  cursor: pointer;
+  border-radius: 15px;
+}
 .table--display {
   position: absolute;
   /* display: grid; */
@@ -332,6 +342,10 @@
   font-size: 30px;
   background-color: white;
   border: 1px solid black
+}
+
+.review_btn{
+    display: grid; 
 }
 
 /* .prodcut--description{

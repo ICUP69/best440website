@@ -10,6 +10,7 @@ const welcomeUser = document.querySelector('.Welcome--nav');
 const confirmSignUp = document.querySelector('.btn2');
 const confirmLogin = document.querySelector('.btn1');
 const search = document.querySelector('.search--Btn');
+const add = document.querySelector('.add--Btn');
 
 
 ///All User Input --> call (variable).value to access it's data 
@@ -31,6 +32,7 @@ const searchDescription = document.querySelector('.desc-input');
 const searchCategory = document.querySelector('.cate-input');
 const searchPrice = document.querySelector('.price-input');
 const table = document.querySelector('.table--display');
+const reviewBtn = document.querySelectorAll('.review_btn');
 
 
 const signUp = [newFirstname, newLastname, newEmail, newUsername, newPassword, confirmPassword];
@@ -54,9 +56,6 @@ const closeWindow = () => {
     backgroundWindow.classList.add('hidden');
 };
 
-const displayForm = () => {
-
-};
 
 let currentUser;
 const LoggedIn = (user) => {
@@ -64,20 +63,46 @@ const LoggedIn = (user) => {
     closeWindow();
     signOutBtn.classList.remove('hidden');
     userPage.classList.remove('hidden');
-
     accountBtn.classList.add('hidden');
     loginBtn.classList.add('hidden');
     welcomeUser.textContent = `Welcome back ${user}`;
 
 };
 
-///Event Listeners
+const displayList = (data) => {
+    table.innerHTML = ' ';
+
+    dataCopy = data;
+
+    dataCopy.forEach(data => {
+        let html =
+            ` <div class="table--row">
+        <div class="product--name">${data.itemName} </div>
+        <div class="prodcut--description">
+            <div class="product--price"> Price: $ ${data.itemPrice}  </div>
+            <div class="product--ID"> ID: ${data.itemID}</div>
+            <div class="product--I"> Seller: ${data.userID}</div>
+            <div class="product--d"> Description: ${data.itemDescription}</div>
+        </div>
+        <button class="review_btn"> view Reviews </button>
+        </div>`;
+
+        table.insertAdjacentHTML('afterbegin', html);
+    });
+};
+
+
+
+//////////////////////////////////////////////////
+//////////////////////////////////////////////Event Listeners
 signOutBtn.addEventListener('click', function (e) {
     e.preventDefault();
-    signOutBtn.classList.add('hidden');  
+    signOutBtn.classList.add('hidden');
     welcomeUser.textContent = '';
     accountBtn.classList.remove('hidden');
     loginBtn.classList.remove('hidden');
+    userPage.classList.add('hidden');
+    currentUser = '';
 });
 
 loginBtn.addEventListener('click', function (e) {
@@ -95,6 +120,17 @@ backgroundWindow.addEventListener('click', function (e) {
     closeWindow();
 });
 
+
+//dynamic event listener 
+document.addEventListener("click", function (e) {
+    const target = e.target.closest('.review_btn');
+    if (target) {
+        console.log('hello');
+    }
+});
+
+
+//////////////////////////////SQL ACTIONS 
 
 confirmSignUp.addEventListener('click', async function (e) {
     e.preventDefault();
@@ -193,7 +229,7 @@ confirmLogin.addEventListener('click', async function (e) {
 
 
 /////Search table function 
-search.addEventListener('click', async function(e){
+search.addEventListener('click', async function (e) {
     e.preventDefault();
 
     itemName = searchTitle.value;
@@ -201,51 +237,62 @@ search.addEventListener('click', async function(e){
     itemPrice = searchPrice.value;
     category = searchCategory.value;
 
-    console.log(category);
-    
-
     ///Send data we used for search option to backend and it will return said tables? 
     // const data = { title, description, category, price };
-    const data = {itemName, itemDescription, itemPrice, category};
+    const data = { itemName, itemDescription, itemPrice, category };
     console.log(data);
     const options = {
-        method: 'POST', 
+        method: 'POST',
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(data)
     };
-    
+
     const response = await fetch('/search', options);
     const json = await response.json();
-    console.log(json);
+    // console.log(json);
 
-    dataCopy = json.data;
+    displayList(json.data);
+});
 
-    dataCopy.forEach(data => {
-        console.log(data.itemName);
-        let html = 
-        ` <div class="table--row">
-        <div class="product--name">${data.itemName} </div>
-        <div class="prodcut--description">
-            <div class="product--price"> Price: $ ${data.itemPrice}  </div>
-            <div class="product--ID"> ID: ${data.itemID}</div>
-            <div class="product--I"> Seller: ${data.userID}</div>
-            <div class="product--d"> Description: ${data.itemDescription}</div>
-        </div>
-        <button> view Reviews </button>
-        </div>`;
 
-        table.insertAdjacentHTML('afterbegin', html);
-    })
-   
-    // for(i = 0; i < json.result.length; i++){
-    //     let html = ` 
-        
-        
-    //     `
-    //     console.log(json.result[i]);
-    // }
+
+add.addEventListener('click', async (event) => {
+    event.preventDefault(); // Prevent default form submission behavior
+    //defining my variables to get values
+    itemName = searchTitle.value;
+    itemDescription = searchDescription.value;
+    itemPrice = searchPrice.value;
+    category = searchCategory.value;
+
+
+    //checking for valid inputs
+    if (itemName === "" || itemDescription === "" || itemPrice === "" || category === "") {
+        window.alert("Please fill in all values");
+        return;
+    }
+
+    console.log(currentUser);
+    const data = { itemName, itemDescription, itemPrice, category, currentUser};
+
+    // //getting response from server
+    // const form = event.target;
+    // const formData = new FormData(form);
+    try {
+        const options = {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data)
+        };
+
+        const response = await fetch('/submit-form', options);
+        const json = await response.json();
+    } catch (error) {
+        console.error('Error submitting form:', error);
+    }
 });
 
 
