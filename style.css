@@ -348,6 +348,18 @@
     display: grid; 
 }
 
+.review{
+  position: fixed;
+  top: 16%;
+  left: 45%;
+  width: 40%;
+  height: 530px;
+  background-color: grey;
+  box-shadow: 0 4rem 6rem rgba(0, 0, 0, 0.3);
+  z-index: 1500;
+  transition: all;  
+}
+
 /* .prodcut--description{
   display: grid; 
 } */

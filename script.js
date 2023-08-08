@@ -34,6 +34,8 @@ const searchPrice = document.querySelector('.price-input');
 const table = document.querySelector('.table--display');
 const reviewBtn = document.querySelectorAll('.review_btn');
 
+const reviewTab = document.querySelector('.review');
+
 
 const signUp = [newFirstname, newLastname, newEmail, newUsername, newPassword, confirmPassword];
 const logIn = [usernameLogin, passwordLogin];
@@ -84,8 +86,9 @@ const displayList = (data) => {
             <div class="product--I"> Seller: ${data.userID}</div>
             <div class="product--d"> Description: ${data.itemDescription}</div>
         </div>
+
         <button class="review_btn"> view Reviews </button>
-        </div>`;
+            `;
 
         table.insertAdjacentHTML('afterbegin', html);
     });
@@ -125,7 +128,8 @@ backgroundWindow.addEventListener('click', function (e) {
 document.addEventListener("click", function (e) {
     const target = e.target.closest('.review_btn');
     if (target) {
-        console.log('hello');
+        reviewTab.classList.remove('hidden');
+    
     }
 });
 

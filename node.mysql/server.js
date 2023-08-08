@@ -174,9 +174,6 @@ app.post('/search', (request, response) => {
     e = ` or (categories = '${value}')` + e;
   });
 
-  // console.log(e);
-
-
   // let sql_1 = `SELECT DISTINCT itemName
   //           FROM items AS i
   //           WHERE EXISTS (SELECT categories
@@ -191,14 +188,14 @@ app.post('/search', (request, response) => {
   WHERE NOT EXISTS (SELECT categories 
   FROM categories AS c 
   WHERE (c.ID = i.itemID) 
-  AND ( (i.itemName = '${search}') ${e} ) )
+  AND ( (i.itemName like '%${search}%') ${e} ) )
   union all 
   SELECT DISTINCT * 
   FROM items AS i 
   WHERE EXISTS (SELECT categories 
   FROM categories AS c 
   WHERE (c.ID = i.itemID) 
-  AND ( (i.itemName = '${search}') ${e} ) );`;
+  AND ( (i.itemName like '%${search}%') ${e} ) );`;
 
   let insertInto = connection.query(sql_1, (error, results, fields) => {
     if (error) {
