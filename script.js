@@ -40,6 +40,7 @@ const reviewTab = document.querySelector('.review');
 const reviewRate = document.querySelector('.rate');
 const reviewSubmit = document.querySelector('.submit_rev');
 const userReview = document.getElementById('review_desc');
+const revCancel = document.querySelector('.cancel_rev');
 
 
 
@@ -164,7 +165,27 @@ reviewSubmit.addEventListener('click', async function (e) {
     const json = await response.json();
     console.log(json);
 
+
+   
+
+    reviewTab.classList.add('hidden');
+    closeWindow();
+    openWindow();
+
+    document.getElementById('review_desc').value = '';
+    
+
+    
+
 });
+
+revCancel.addEventListener('click', async function (e) {
+    e.preventDefault();
+    reviewTab.classList.add('hidden');
+   
+
+});
+
 
 //dynamic event listener for Reviews 
 document.addEventListener("click", function (e) {

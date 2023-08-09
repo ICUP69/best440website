@@ -370,7 +370,10 @@
   width: 70px; 
   height: 30px; 
   background-color: grey;
-  border-style: none;
+  
+  border: 2px solid black;
+  
+
 }
 
 .submit_rev:hover {
@@ -392,7 +395,9 @@
 textarea {
   resize: none;
 }
-
+.submit_rev {
+  margin-left: 48px;
+}
 /* .prodcut--description{
   display: grid; 
 } */
