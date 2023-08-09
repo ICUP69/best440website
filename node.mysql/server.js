@@ -183,7 +183,8 @@ app.post('/search', (request, response) => {
 
 
   ///RETRIEVE SEARCH FOR NAME, PRICE AND CATEGORY AND RETURNS REMAINING NOT LISTED 
-  let sql_1 = `SELECT DISTINCT *
+  let sql_1 = 
+  `SELECT DISTINCT *
   FROM items AS i 
   WHERE NOT EXISTS (SELECT categories 
   FROM categories AS c 
@@ -248,15 +249,33 @@ app.post('/submit-form', (req, res) => {
   });
 });
 
-//connection.end();
-///JUST AS A REFERENCE FOR LATER 
-// <div class="table--row">
-//                 <div class="product--name">DEMO ITEM </div>
-//                 <div class="prodcut--description">
-//                     <div class="product--price"> Price: 2.30</div>
-//                     <div class="product--ID"> ID: 203020</div>
-//                 </div>
 
-//                 <button class="review_btn"> view description </button>
-//             </div>
+
+app.post('/submit-review', (req, res) => {
+  // Access form data using req.body
+  const itemID = req.body.selectedItem;
+  const Rate = req.body.Rating; 
+  const Review = req.body.Review;
+  const user = req.body.currentUser;
+
+  // Prepare the SQL statement
+  const sql = ` INSERT INTO review (idreview, username, review, rating) VALUES (?,?,?,?) `; 
+
+  // Execute the SQL statement with parameters
+  connection.query(sql, [itemID,user,Review,Rate], (err, result) => {
+    if (err) {
+      console.error('Error inserting item: ' + err.message);
+      res.send('Error inserting item');
+    } else {
+      console.log(result);
+      console.log('REVIEW successfully submitted');
+      res.json({
+        status: "Review Successfully submitted"
+      });
+    }
+  });
+});
+
+
+
 

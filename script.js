@@ -34,16 +34,28 @@ const searchPrice = document.querySelector('.price-input');
 const table = document.querySelector('.table--display');
 const reviewBtn = document.querySelectorAll('.review_btn');
 
+
+///REVIEW FORM INTERACTIONS
 const reviewTab = document.querySelector('.review');
+const reviewRate = document.querySelector('.rate');
+const reviewSubmit = document.querySelector('.submit_rev');
+const userReview = document.getElementById('review_desc');
+
 
 
 const signUp = [newFirstname, newLastname, newEmail, newUsername, newPassword, confirmPassword];
 const logIn = [usernameLogin, passwordLogin];
 
+
+let currentUser;
+let selectedItem;
+let selectedItemUser; 
+
 //Functions
 const openWindow = (l) => {
     l.classList.remove('hidden');
     backgroundWindow.classList.remove('hidden');
+    threeDayLimit();
 };
 
 const loginError = (l) => {
@@ -58,8 +70,6 @@ const closeWindow = () => {
     backgroundWindow.classList.add('hidden');
 };
 
-
-let currentUser;
 const LoggedIn = (user) => {
     currentUser = user;
     closeWindow();
@@ -94,7 +104,19 @@ const displayList = (data) => {
     });
 };
 
+const threeDayLimit = () => {
+    const currentDate = new Date();
+    const locale = navigator.language;
+    const options = {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      }
 
+      const now = new Intl.DateTimeFormat(locale, options).format(currentDate);
+    console.log(now);
+
+};
 
 //////////////////////////////////////////////////
 //////////////////////////////////////////////Event Listeners
@@ -123,16 +145,44 @@ backgroundWindow.addEventListener('click', function (e) {
     closeWindow();
 });
 
+reviewSubmit.addEventListener('click', async function (e) {
+    e.preventDefault();
+    const Rating = reviewRate.value;
+    const Review = userReview.value;
+    console.log(reviewRate.value);
 
-//dynamic event listener 
+    const data = { Rating, Review, selectedItem, currentUser};
+    const options = {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data)
+    };
+
+    const response = await fetch('/submit-review', options);
+    const json = await response.json();
+    console.log(json);
+
+});
+
+//dynamic event listener for Reviews 
 document.addEventListener("click", function (e) {
     const target = e.target.closest('.review_btn');
     if (target) {
+
+        if (!reviewTab.classList.contains('hidden')) return;
         reviewTab.classList.remove('hidden');
-    
+
+        //grab user ID FROM Selected review tab
+        const grabParent = target.parentNode.childNodes[3];
+        const getID = grabParent.childNodes[3];
+        const getUser = grabParent.childNodes[5];
+        selectedItemUser = getUser.textContent.slice(9);
+        selectedItem = getID.textContent.slice(5);
+        console.log(selectedItem);
     }
 });
-
 
 //////////////////////////////SQL ACTIONS 
 
@@ -261,7 +311,6 @@ search.addEventListener('click', async function (e) {
 });
 
 
-
 add.addEventListener('click', async (event) => {
     event.preventDefault(); // Prevent default form submission behavior
     //defining my variables to get values
@@ -278,7 +327,7 @@ add.addEventListener('click', async (event) => {
     }
 
     console.log(currentUser);
-    const data = { itemName, itemDescription, itemPrice, category, currentUser};
+    const data = { itemName, itemDescription, itemPrice, category, currentUser };
 
     // //getting response from server
     // const form = event.target;

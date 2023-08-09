@@ -76,7 +76,7 @@
             <div class="form_structure">
                 <label> Confirm Password: </label>
                 <input class="confirm--password" type="text" />
-            </div>         
+            </div>
 
             <button class="btn2"> Sign up </button>
 
@@ -112,7 +112,7 @@
                 </div>
 
                 <button class="add--Btn"> Add Item </button>
-                
+
                 <button class="search--Btn"> Search </button>
             </form>
         </div>
@@ -120,21 +120,55 @@
 
         <div class="table--display">
 
-                    
+
         </div>
 
-        <div class="review hidden"> 
+        <div class="review hidden">
+            <button class="cancel_rev"> « Go Back </button>
 
-                <div class="review--form">
-                    <form class="review_form">
-                        <div class="form_structure">
-                            <label class="review--des"> review: </label>
-                            <input class="rev disc" type="textarea" />
-                        </div>
-                        <button class="submit_rev"> Submit </button>
-                    </form>
+            <div class="review--form">
+                <form>
+                    <label for="rate">Choose a rating:</label>
+                    <select name="rating" class="rate">
+                        <option value="excellent">excellent</option>
+                        <option value="good">good</option>
+                        <option value="fair">fair</option>
+                        <option value="poor">poor</option>
+                    </select>
+
+                    <div class="rev_structure">
+                        <label class="review--des"> review: </label>
+                        <textarea id="review_desc" rows="5" cols="30"></textarea>
+                    </div>
+
+                    <button class="submit_rev"> Submit </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- <div class="review--form">
+            <button class="cancel_rev"> Cancel </button>
+            <form class="review_form">
+                <label for="rate">Choose a rating:</label> 
+                    <select name="rating" id="rate"> 
+                      <option value="excellent">excellent</option> 
+                      <option value="good">good</option> 
+                      <option value="fair">fair</option> 
+                      <option value="poor">poor</option> 
+                     </select>
+
+
+                <div class="rev_structure">
+                    <label class="review--des"> review: </label>
+                    <textarea id="review_desc" rows="5" cols="30"></textarea>
                 </div>
-        </div>
+                <button class="submit_rev"> Submit </button>
+
+            </form>
+        </div> -->
+    </div>
+
+
 
 
     </div>

@@ -360,6 +360,39 @@
   transition: all;  
 }
 
+.review--form{
+  padding-left: 30px;
+}
+
+
+.cancel_rev{
+  font-size: 10px; 
+  width: 70px; 
+  height: 30px; 
+  background-color: grey;
+  border-style: none;
+}
+
+.submit_rev:hover {
+  background-color: #4CAF50; 
+  color: white;
+}
+
+.cancel_rev:hover {
+  background-color: #f01111; 
+  color: white;
+}
+
+
+.rev_structure{
+  margin-top: 30px;
+  display: flex;
+}
+
+textarea {
+  resize: none;
+}
+
 /* .prodcut--description{
   display: grid; 
 } */
