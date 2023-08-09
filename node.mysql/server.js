@@ -257,23 +257,60 @@ app.post('/submit-review', (req, res) => {
   const Rate = req.body.Rating; 
   const Review = req.body.Review;
   const user = req.body.currentUser;
+  const curdate = new Date().toJSON().slice(0, 10);
 
-  // Prepare the SQL statement
-  const sql = ` INSERT INTO review (idreview, username, review, rating) VALUES (?,?,?,?) `; 
+  const revCount= "SELECT COUNT(*) FROM projectdb.review WHERE projectdb.review.date = date AND username ='" +user+"'";
 
-  // Execute the SQL statement with parameters
-  connection.query(sql, [itemID,user,Review,Rate], (err, result) => {
-    if (err) {
-      console.error('Error inserting item: ' + err.message);
-      res.send('Error inserting item');
-    } else {
-      console.log(result);
-      console.log('REVIEW successfully submitted');
-      res.json({
-        status: "Review Successfully submitted"
-      });
-    }
-  });
+
+  connection.query(revCount, 
+    (error, result) => {
+      if (error) {
+        console.error('Error grabbing count ' + error.message);
+        
+      } else {
+
+               const count = result[0]['COUNT(*)'];
+               console.log(count);
+                
+               if(count>=3){
+                res.json({
+                  status: "Review not submitted"
+                });
+               }
+               else{  // Prepare the SQL statement
+                const sql = ` INSERT INTO review (idreview, username, review,date, rating) VALUES (?,?,?,?,?) `; 
+              
+                // Execute the SQL statement with parameters
+                connection.query(sql, [itemID,user,Review,curdate, Rate], (err, result) => {
+                  if (err) {
+                    console.error('Error inserting item: ' + err.message);
+                    res.send('Error inserting item');
+                  } else {
+                    console.log(result);
+                    console.log('REVIEW successfully submitted');
+                    res.json({
+                      status: "Review Successfully submitted"
+                    });
+                  }
+                });
+                
+               }
+               
+
+       
+        
+    }});
+
+   
+
+    
+
+  
+
+
+
+
+
 });
 
 

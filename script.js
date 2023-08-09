@@ -172,7 +172,7 @@ reviewSubmit.addEventListener('click', async function (e) {
     closeWindow();
     openWindow();
 
-    document.getElementById('review_desc').value = '';
+   
     
 
     
