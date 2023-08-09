@@ -47,15 +47,15 @@ const signUp = [newFirstname, newLastname, newEmail, newUsername, newPassword, c
 const logIn = [usernameLogin, passwordLogin];
 
 
+
 let currentUser;
 let selectedItem;
-let selectedItemUser; 
+let selectedItemUser;
 
 //Functions
 const openWindow = (l) => {
     l.classList.remove('hidden');
     backgroundWindow.classList.remove('hidden');
-    threeDayLimit();
 };
 
 const loginError = (l) => {
@@ -78,7 +78,8 @@ const LoggedIn = (user) => {
     accountBtn.classList.add('hidden');
     loginBtn.classList.add('hidden');
     welcomeUser.textContent = `Welcome back ${user}`;
-
+    // app._setCurrentUser(user);
+    // console.log(app._getCurrentUser());
 };
 
 const displayList = (data) => {
@@ -104,19 +105,6 @@ const displayList = (data) => {
     });
 };
 
-const threeDayLimit = () => {
-    const currentDate = new Date();
-    const locale = navigator.language;
-    const options = {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-      }
-
-      const now = new Intl.DateTimeFormat(locale, options).format(currentDate);
-    console.log(now);
-
-};
 
 //////////////////////////////////////////////////
 //////////////////////////////////////////////Event Listeners
@@ -128,6 +116,7 @@ signOutBtn.addEventListener('click', function (e) {
     loginBtn.classList.remove('hidden');
     userPage.classList.add('hidden');
     currentUser = '';
+    //app._setCurrentUser('');
 });
 
 loginBtn.addEventListener('click', function (e) {
@@ -145,27 +134,6 @@ backgroundWindow.addEventListener('click', function (e) {
     closeWindow();
 });
 
-reviewSubmit.addEventListener('click', async function (e) {
-    e.preventDefault();
-    const Rating = reviewRate.value;
-    const Review = userReview.value;
-    console.log(reviewRate.value);
-
-    const data = { Rating, Review, selectedItem, currentUser};
-    const options = {
-        method: 'POST',
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data)
-    };
-
-    const response = await fetch('/submit-review', options);
-    const json = await response.json();
-    console.log(json);
-
-});
-
 //dynamic event listener for Reviews 
 document.addEventListener("click", function (e) {
     const target = e.target.closest('.review_btn');
@@ -180,7 +148,7 @@ document.addEventListener("click", function (e) {
         const getUser = grabParent.childNodes[5];
         selectedItemUser = getUser.textContent.slice(9);
         selectedItem = getID.textContent.slice(5);
-        console.log(selectedItem);
+
     }
 });
 
@@ -205,6 +173,11 @@ confirmSignUp.addEventListener('click', async function (e) {
         });
         return;
     }
+
+    if (firstName === '' || lastName === '' || email === '' || username === '' || password === '') {
+        alert('missing fields');
+        return;
+    } 
 
     console.log("match");
     //////Check for Duplicate username and email --> return alert and delete entries --> may need access to DB
@@ -282,7 +255,7 @@ confirmLogin.addEventListener('click', async function (e) {
 });
 
 
-/////Search table function 
+
 search.addEventListener('click', async function (e) {
     e.preventDefault();
 
@@ -291,7 +264,7 @@ search.addEventListener('click', async function (e) {
     itemPrice = searchPrice.value;
     category = searchCategory.value;
 
-    ///Send data we used for search option to backend and it will return said tables? 
+    ///Send data we used for search option to backend and it will return said tables?
     // const data = { title, description, category, price };
     const data = { itemName, itemDescription, itemPrice, category };
     console.log(data);
@@ -309,7 +282,6 @@ search.addEventListener('click', async function (e) {
 
     displayList(json.data);
 });
-
 
 add.addEventListener('click', async (event) => {
     event.preventDefault(); // Prevent default form submission behavior

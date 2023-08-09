@@ -51,8 +51,6 @@ connection.connect(function (err) {
 
 ////////////////////////////////REQUESTS AND GETS 
 
-
-
 /////SIGN IN FEATURE
 app.post('/signup', (request, response) => {
   console.log('I got a new login request');
@@ -183,8 +181,8 @@ app.post('/search', (request, response) => {
 
 
   ///RETRIEVE SEARCH FOR NAME, PRICE AND CATEGORY AND RETURNS REMAINING NOT LISTED 
-  let sql_1 = 
-  `SELECT DISTINCT *
+  let sql_1 =
+    `SELECT DISTINCT *
   FROM items AS i 
   WHERE NOT EXISTS (SELECT categories 
   FROM categories AS c 
@@ -218,20 +216,31 @@ app.post('/search', (request, response) => {
 
 });
 
-                                                                                 
+
 // POST route to handle form submission
 app.post('/submit-form', (req, res) => {
   // Access form data using req.body
   const itemName = req.body.itemName;
   const itemDescription = req.body.itemDescription;
-  const itemCategory = req.body.itemCategory;
+  const itemCategory = req.body.category;
   const itemPrice = req.body.itemPrice;
-  const userID = req.body.currentUser; // Replace this with the actual user ID (if you have a login system)
-  console.log(`this is the ${userID}`);
+  const userID = req.body.currentUser; 
+
+  // test = itemCategory.split(' ');
+  // e = `( ${k} ,${test[0]} ) ;`;
+  // console.log(e);
+
+  // for(i = 1; i < test.length; i++){
+  //   e = `${test[i]}`
+  // }
+  
 
   // Prepare the SQL statement
   const sql = `INSERT INTO items (itemName, itemDescription, itemPrice, userID)
               VALUES (?, ?, ?, ?)`;
+
+  // const sql1 = `INSERT INTO categories (ID,categories)
+  //             VALUES e`;
 
   // Execute the SQL statement with parameters
   connection.query(sql, [itemName, itemDescription, itemPrice, userID], (err, result) => {
@@ -254,15 +263,15 @@ app.post('/submit-form', (req, res) => {
 app.post('/submit-review', (req, res) => {
   // Access form data using req.body
   const itemID = req.body.selectedItem;
-  const Rate = req.body.Rating; 
+  const Rate = req.body.Rating;
   const Review = req.body.Review;
   const user = req.body.currentUser;
 
   // Prepare the SQL statement
-  const sql = ` INSERT INTO review (idreview, username, review, rating) VALUES (?,?,?,?) `; 
+  const sql = ` INSERT INTO review (idreview, username, review, rating) VALUES (?,?,?,?) `;
 
   // Execute the SQL statement with parameters
-  connection.query(sql, [itemID,user,Review,Rate], (err, result) => {
+  connection.query(sql, [itemID, user, Review, Rate], (err, result) => {
     if (err) {
       console.error('Error inserting item: ' + err.message);
       res.send('Error inserting item');
