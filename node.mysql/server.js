@@ -249,26 +249,67 @@ app.post('/submit-form', (req, res) => {
   const itemCategory = req.body.category;
   const itemPrice = req.body.itemPrice;
   const userID = req.body.currentUser; // Replace this with the actual user ID (if you have a login system)
+  const curdate = new Date().toJSON().slice(0, 10);
   console.log(`this is the ${userID}`);
 
-  // Prepare the SQL statement
-  const sql = `INSERT INTO items (itemName, itemDescription, itemPrice, userID, category)
-              VALUES (?, ?, ?, ?,? )`;
 
-  // Execute the SQL statement with parameters
-  connection.query(sql, [itemName, itemDescription, itemPrice, userID,itemCategory], (err, result) => {
-    if (err) {
-      console.error('Error inserting item: ' + err.message);
-      res.send('Error inserting item');
-    } else {
-      console.log(result);
-      //const itemID = result.insertId; // Get the auto-incremented itemID after the insert
-      console.log('Form successfully submitted');
-      res.json({
-        status: "Form Successfully submitted"
-      });
-    }
-  });
+
+  const itmCount= "SELECT COUNT(*) FROM projectdb.items WHERE projectdb.items.date = date AND userID ='"+userID+"'";
+
+
+
+
+  connection.query(itmCount, 
+    (error, result) => {
+      if (error) {
+        console.error('Error grabbing count ' + error.message);
+        
+      } else {
+
+               const count = result[0]['COUNT(*)'];
+               console.log(count);
+                
+               if(count>=3){
+                res.json({
+                  status: "item not submitted"
+                });
+               }
+               else{
+                const sql = `INSERT INTO items (itemName, itemDescription, itemPrice, userID, category,date)
+                   VALUES (?, ?, ?, ?,?,? )`;
+
+                     // Execute the SQL statement with parameters
+                           connection.query(sql, [itemName, itemDescription, itemPrice, userID,itemCategory, curdate], (err, result) => {
+                           if (err) {
+                               console.error('Error inserting item: ' + err.message);
+                               res.send('Error inserting item');
+                        } else {
+                            console.log(result);
+                             //const itemID = result.insertId; // Get the auto-incremented itemID after the insert
+                                console.log('Form successfully submitted');
+                                     res.json({
+                                          status: "Form Successfully submitted"
+                                 });
+                                 }
+                                  });
+                  
+                
+                              }
+               
+
+       
+        
+                                    }});
+
+
+
+
+
+
+  
+
+  // Prepare the SQL statement
+  
 });
 
 
