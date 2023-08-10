@@ -251,14 +251,17 @@ app.post('/submit-form', (req, res) => {
   }
 
   // Prepare the SQL statement
-  const sql = `
-  BEGIN;
-  INSERT INTO items (itemName, itemDescription, itemPrice, userID)
-    VALUES (?, ?, ?, ?);
-  INSERT INTO categories 
-    VALUES 
-    ${e}
-  COMMIT;`;
+  // const sql = `
+  // BEGIN;
+  // INSERT INTO items (itemName, itemDescription, itemPrice, userID)
+  //   VALUES (?, ?, ?, ?);
+  // INSERT INTO categories 
+  //   VALUES 
+  //   ${e}
+  // COMMIT;`;
+
+  const sql = `INSERT INTO items (itemName, itemDescription, itemPrice, userID, category)
+  VALUES (?, ?, ?, ?,? )`;
 
 
   const itmCount= "SELECT COUNT(*) FROM projectdb.items WHERE projectdb.items.date = date AND userID ='"+userID+"'";
