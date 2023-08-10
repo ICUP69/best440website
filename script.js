@@ -40,13 +40,12 @@ const reviewTab = document.querySelector('.review');
 const reviewRate = document.querySelector('.rate');
 const reviewSubmit = document.querySelector('.submit_rev');
 const userReview = document.getElementById('review_desc');
+const revCancel = document.querySelector('.cancel_rev');
 
 
 
 const signUp = [newFirstname, newLastname, newEmail, newUsername, newPassword, confirmPassword];
 const logIn = [usernameLogin, passwordLogin];
-
-
 
 let currentUser;
 let selectedItem;
@@ -105,7 +104,6 @@ const displayList = (data) => {
     });
 };
 
-
 //////////////////////////////////////////////////
 //////////////////////////////////////////////Event Listeners
 signOutBtn.addEventListener('click', function (e) {
@@ -134,7 +132,12 @@ backgroundWindow.addEventListener('click', function (e) {
     closeWindow();
 });
 
-//dynamic event listener for Reviews 
+revCancel.addEventListener('click', async function (e) {
+    e.preventDefault();
+    userReview.value = '';
+    reviewTab.classList.add('hidden');
+});
+
 document.addEventListener("click", function (e) {
     const target = e.target.closest('.review_btn');
     if (target) {
@@ -180,6 +183,7 @@ confirmSignUp.addEventListener('click', async function (e) {
     } 
 
     console.log("match");
+
     //////Check for Duplicate username and email --> return alert and delete entries --> may need access to DB
 
     //If all passes, register account
@@ -255,7 +259,6 @@ confirmLogin.addEventListener('click', async function (e) {
 });
 
 
-
 search.addEventListener('click', async function (e) {
     e.preventDefault();
 
@@ -318,6 +321,35 @@ add.addEventListener('click', async (event) => {
     } catch (error) {
         console.error('Error submitting form:', error);
     }
+});
+
+reviewSubmit.addEventListener('click', async function (e) {
+    e.preventDefault();
+    const Rating = reviewRate.value;
+    const Review = userReview.value;
+    console.log(reviewRate.value);
+
+    if (selectedItemUser === currentUser) {
+        alert('Cannot review own items');
+        return;
+    }
+
+    const data = { Rating, Review, selectedItem, currentUser};
+    const options = {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data)
+    };
+
+    const response = await fetch('/submit-review', options);
+    const json = await response.json();
+    console.log(json);
+
+    reviewTab.classList.add('hidden');
+    closeWindow();
+
 });
 
 
