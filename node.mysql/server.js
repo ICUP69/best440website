@@ -151,7 +151,6 @@ app.post('/login', (request, response) => {
 
 
 ///////////////Search/ Table function 
-
 app.post('/search', (request, response) => {
   const data = request.body;
   console.log(data);
@@ -161,13 +160,30 @@ app.post('/search', (request, response) => {
   const price = data.itemPrice;
   let e = ` `;
 
+  const sql = `SELECT * FROM projectdb.items WHERE category LIKE '%${category}%'`;
+  
+  connection.query(sql, (error, result) => {
+      if (error) {
+        console.error('Error gcategory: ' + error.message);     
+      }
+      else{
+        let passField = JSON.parse(JSON.stringify(result));
+        response.json({
+          data: passField,
+        }); 
+
+      }});
+
+
   //turn category into a array of string 
-  test = data.category.split(' ');
+ /* test = data.category.split(' ');
   console.log(test);
 
   test.forEach(value => {
     e = ` or (categories = '${value}')` + e;
   });
+
+  */
 
   // let sql_1 = `SELECT DISTINCT itemName
   //           FROM items AS i
@@ -178,8 +194,8 @@ app.post('/search', (request, response) => {
 
 
   ///RETRIEVE SEARCH FOR NAME, PRICE AND CATEGORY AND RETURNS REMAINING NOT LISTED 
-  let sql_1 =
-    `SELECT DISTINCT *
+  /*let sql_1 = 
+  `SELECT DISTINCT *
   FROM items AS i 
   WHERE NOT EXISTS (SELECT categories 
   FROM categories AS c 
@@ -193,7 +209,7 @@ app.post('/search', (request, response) => {
   WHERE (c.ID = i.itemID) 
   AND ( (i.itemName like '%${search}%') ${e} ) );`;
 
-  let insertInto = connection.query(sql_1, (error, results, fields) => {
+/*  let insertInto = connection.query(sql_1, (error, results, fields) => {
     if (error) {
       status1 = 'error';
       response.json({
@@ -209,7 +225,7 @@ app.post('/search', (request, response) => {
       data: passField,
     });
 
-  });
+  });*/
 
 });
 
@@ -241,11 +257,8 @@ app.post('/submit-form', (req, res) => {
     ${e}
   COMMIT;`;
 
-  // const sql1 = `INSERT INTO categories (ID,categories)
-  //             VALUES e`;
-
   // Execute the SQL statement with parameters
-  connection.query(sql, [itemName, itemDescription, itemPrice, userID], (err, result) => {
+  connection.query(sql, [itemName, itemDescription, itemPrice, userID,itemCategory], (err, result) => {
     if (err) {
       console.error('Error inserting item: ' + err.message);
       res.send('Error inserting item');
