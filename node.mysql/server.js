@@ -166,13 +166,35 @@ app.post('/search', (request, response) => {
   const price = data.itemPrice;
   let e = ` `;
 
+  const sql = "SELECT * FROM projectdb.items WHERE category LIKE '%"+category+"%'";
+  
+
+
+  connection.query(sql, 
+    (error, result) => {
+      if (error) {
+        console.error('Error gcategory ' + error.message);
+        
+      }
+      else{
+        let passField = JSON.parse(JSON.stringify(result));
+        response.json({
+          data: passField,
+        });
+        
+
+      }});
+
+
   //turn category into a array of string 
-  test = data.category.split(' ');
+ /* test = data.category.split(' ');
   console.log(test);
 
   test.forEach(value => {
     e = ` or (categories = '${value}')` + e;
   });
+
+  */
 
   // let sql_1 = `SELECT DISTINCT itemName
   //           FROM items AS i
@@ -183,7 +205,7 @@ app.post('/search', (request, response) => {
 
 
   ///RETRIEVE SEARCH FOR NAME, PRICE AND CATEGORY AND RETURNS REMAINING NOT LISTED 
-  let sql_1 = 
+  /*let sql_1 = 
   `SELECT DISTINCT *
   FROM items AS i 
   WHERE NOT EXISTS (SELECT categories 
@@ -198,7 +220,7 @@ app.post('/search', (request, response) => {
   WHERE (c.ID = i.itemID) 
   AND ( (i.itemName like '%${search}%') ${e} ) );`;
 
-  let insertInto = connection.query(sql_1, (error, results, fields) => {
+/*  let insertInto = connection.query(sql_1, (error, results, fields) => {
     if (error) {
       status1 = 'error';
       response.json({
@@ -214,7 +236,7 @@ app.post('/search', (request, response) => {
       data: passField,
     });
 
-  });
+  });*/
 
 });
 
@@ -224,17 +246,17 @@ app.post('/submit-form', (req, res) => {
   // Access form data using req.body
   const itemName = req.body.itemName;
   const itemDescription = req.body.itemDescription;
-  const itemCategory = req.body.itemCategory;
+  const itemCategory = req.body.category;
   const itemPrice = req.body.itemPrice;
   const userID = req.body.currentUser; // Replace this with the actual user ID (if you have a login system)
   console.log(`this is the ${userID}`);
 
   // Prepare the SQL statement
-  const sql = `INSERT INTO items (itemName, itemDescription, itemPrice, userID)
-              VALUES (?, ?, ?, ?)`;
+  const sql = `INSERT INTO items (itemName, itemDescription, itemPrice, userID, category)
+              VALUES (?, ?, ?, ?,? )`;
 
   // Execute the SQL statement with parameters
-  connection.query(sql, [itemName, itemDescription, itemPrice, userID], (err, result) => {
+  connection.query(sql, [itemName, itemDescription, itemPrice, userID,itemCategory], (err, result) => {
     if (err) {
       console.error('Error inserting item: ' + err.message);
       res.send('Error inserting item');
