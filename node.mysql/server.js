@@ -51,8 +51,6 @@ connection.connect(function (err) {
 
 ////////////////////////////////REQUESTS AND GETS 
 
-
-
 /////SIGN IN FEATURE
 app.post('/signup', (request, response) => {
   console.log('I got a new login request');
@@ -89,9 +87,6 @@ app.post('/signup', (request, response) => {
       lastN: data.lastName
     })
   });
-
-
-  /////////
 
 });
 
@@ -156,7 +151,6 @@ app.post('/login', (request, response) => {
 
 
 ///////////////Search/ Table function 
-
 app.post('/search', (request, response) => {
   const data = request.body;
   console.log(data);
@@ -166,22 +160,17 @@ app.post('/search', (request, response) => {
   const price = data.itemPrice;
   let e = ` `;
 
-  const sql = "SELECT * FROM projectdb.items WHERE category LIKE '%"+category+"%'";
+  const sql = `SELECT * FROM projectdb.items WHERE category LIKE '%${category}%'`;
   
-
-
-  connection.query(sql, 
-    (error, result) => {
+  connection.query(sql, (error, result) => {
       if (error) {
-        console.error('Error gcategory ' + error.message);
-        
+        console.error('Error gcategory: ' + error.message);     
       }
       else{
         let passField = JSON.parse(JSON.stringify(result));
         response.json({
           data: passField,
-        });
-        
+        }); 
 
       }});
 
@@ -240,7 +229,7 @@ app.post('/search', (request, response) => {
 
 });
 
-                                                                                 
+
 // POST route to handle form submission
 app.post('/submit-form', (req, res) => {
   // Access form data using req.body
@@ -252,6 +241,24 @@ app.post('/submit-form', (req, res) => {
   const curdate = new Date().toJSON().slice(0, 10);
   console.log(`this is the ${userID}`);
 
+
+  test = itemCategory.split(' ');
+  e = `(LAST_INSERT_ID() , ${test[0]} ) ;`;
+  console.log(e);
+
+  for(i = 1; i < test.length; i++){
+    e = `(LAST_INSERT_ID() , ${test[i]} )` + e;
+  }
+
+  // Prepare the SQL statement
+  const sql = `
+  BEGIN;
+  INSERT INTO items (itemName, itemDescription, itemPrice, userID)
+    VALUES (?, ?, ?, ?);
+  INSERT INTO categories 
+    VALUES 
+    ${e}
+  COMMIT;`;
 
 
   const itmCount= "SELECT COUNT(*) FROM projectdb.items WHERE projectdb.items.date = date AND userID ='"+userID+"'";
@@ -317,63 +324,45 @@ app.post('/submit-form', (req, res) => {
 app.post('/submit-review', (req, res) => {
   // Access form data using req.body
   const itemID = req.body.selectedItem;
-  const Rate = req.body.Rating; 
+  const Rate = req.body.Rating;
   const Review = req.body.Review;
   const user = req.body.currentUser;
   const curdate = new Date().toJSON().slice(0, 10);
 
-  const revCount= "SELECT COUNT(*) FROM projectdb.review WHERE projectdb.review.date = date AND username ='" +user+"'";
+  const revCount = `SELECT COUNT(*) FROM projectdb.review WHERE projectdb.review.date = date AND username ='${user}';`;
 
-
-  connection.query(revCount, 
+  connection.query(revCount,
     (error, result) => {
       if (error) {
         console.error('Error grabbing count ' + error.message);
-        
       } else {
+        const count = result[0]['COUNT(*)'];
+        console.log(count);
 
-               const count = result[0]['COUNT(*)'];
-               console.log(count);
-                
-               if(count>=3){
-                res.json({
-                  status: "Review not submitted"
-                });
-               }
-               else{  // Prepare the SQL statement
-                const sql = ` INSERT INTO review (idreview, username, review,date, rating) VALUES (?,?,?,?,?) `; 
-              
-                // Execute the SQL statement with parameters
-                connection.query(sql, [itemID,user,Review,curdate, Rate], (err, result) => {
-                  if (err) {
-                    console.error('Error inserting item: ' + err.message);
-                    res.send('Error inserting item');
-                  } else {
-                    console.log(result);
-                    console.log('REVIEW successfully submitted');
-                    res.json({
-                      status: "Review Successfully submitted"
-                    });
-                  }
-                });
-                
-               }
-               
+        if (count >= 3) {
+          res.json({
+            status: "Review not submitted"
+          });
+        }
+        else {  // Prepare the SQL statement
+          const sql = ` INSERT INTO review (idreview, username, review, date, rating) VALUES (?,?,?,?,?) `;
 
-       
-        
-    }});
-
-   
-
-    
-
-  
-
-
-
-
-
+          // Execute the SQL statement with parameters
+          connection.query(sql, [itemID, user, Review, curdate, Rate], (err, result) => {
+            if (err) {
+              console.error('Error inserting item: ' + err.message);
+              res.send('Error inserting item');
+            } else {
+              console.log(result);
+              console.log('REVIEW successfully submitted');
+              res.json({
+                status: "Review Successfully submitted"
+              });
+            }
+          });
+        }
+      }
+    });
 });
 
 
