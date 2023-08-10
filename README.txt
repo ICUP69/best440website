@@ -11,10 +11,22 @@ Phase 2: Designed the user form and list display and implemented the search feat
 
 Alfredo Gonzalez: Fixed a bug where querying an unknown user caused a crash. Fixed a block of code responsible for correctly pathing to the right files. Added a line of code to help mitigate sql injection.
              
+---------------------------------------------------------------------
 
-Jesse Cruz: worked on the sql prevention attacks making sure the password and the confirm password were the same and making sure dupelicate accounts werent created with the same username and email. Created and posted the video on youtube
+Jesse Cruz
+
+Phase 1: worked on the sql prevention attacks making sure the password and the confirm password were the same and making sure dupelicate accounts werent created with the same username and email. Created and posted the video on youtube
 
 
-youtube link:
+Phase 2: Worked on adding front end functionality too the sign out button for a smooth transition. Polished the front end of the review interface added front end functionality too the buttons. 
+Worked on backend so only 3 items could be added and only 3 reviews could be added per account per day. Refined the back end of for the search results of categories. Created and posted the video for phase 2.
+
+
+youtube link: phase 1
 
 https://youtu.be/oLgcbSK1ASU
+
+
+youtube link: phase 2
+
+https://youtu.be/ETDcvnvwRzI
