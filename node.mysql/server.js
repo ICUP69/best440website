@@ -161,9 +161,14 @@ app.post('/search', (request, response) => {
   const description = data.itemDescription;
   console.log(`this is ${description} ----`);
 
+
   let e = ` `;
+  
+  if (search !== '') {
+    e = ` or (itemName LIKE '%${search}%')` + e;
+  }
+
   if (description !== '') {
-    console.log('trueeee');
     e = `or (itemDescription LIKE '%${description}%')` + e;
   }
 
@@ -173,7 +178,7 @@ app.post('/search', (request, response) => {
 
   console.log(`eeeeee is ${e}`);
 
-  const sql = `SELECT * FROM projectdb.items WHERE (category LIKE '%${category}%') or (itemName LIKE '%${search}%') ${e} ;`;
+  const sql = `SELECT * FROM projectdb.items WHERE (category LIKE '%${category}%') ${e} ;`;
 
   connection.query(sql, (error, result) => {
     if (error) {

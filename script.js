@@ -267,10 +267,6 @@ search.addEventListener('click', async function (e) {
     itemPrice = searchPrice.value;
     category = searchCategory.value;
 
-    if(itemName === '' || category === ''){
-        alert('please input a name or category');
-        return; 
-    }
 
     ///Send data we used for search option to backend and it will return said tables?
     // const data = { title, description, category, price };
