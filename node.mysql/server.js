@@ -153,37 +153,39 @@ app.post('/login', (request, response) => {
 ///////////////Search/ Table function 
 app.post('/search', (request, response) => {
   const data = request.body;
-  console.log(data);
+  // console.log(data);
 
   const search = data.itemName;
   const category = data.category;
   const price = data.itemPrice;
+  const description = data.itemDescription;
   let e = ` `;
 
-  const sql = `SELECT * FROM projectdb.items WHERE category LIKE '%${category}%'`;
-  
-  connection.query(sql, (error, result) => {
-      if (error) {
-        console.error('Error gcategory: ' + error.message);     
-      }
-      else{
-        let passField = JSON.parse(JSON.stringify(result));
-        response.json({
-          data: passField,
-        }); 
+  const sql = `SELECT * FROM projectdb.items WHERE (category LIKE '%${category}%') or (itemName LIKE '%${search}%') or (itemDescription LIKE '%${description}%') ;`;
 
-      }});
+  connection.query(sql, (error, result) => {
+    if (error) {
+      console.error('Error gcategory: ' + error.message);
+    }
+    else {
+      let passField = JSON.parse(JSON.stringify(result));
+      response.json({
+        data: passField,
+      });
+
+    }
+  });
 
 
   //turn category into a array of string 
- /* test = data.category.split(' ');
-  console.log(test);
-
-  test.forEach(value => {
-    e = ` or (categories = '${value}')` + e;
-  });
-
-  */
+  /* test = data.category.split(' ');
+   console.log(test);
+ 
+   test.forEach(value => {
+     e = ` or (categories = '${value}')` + e;
+   });
+ 
+   */
 
   // let sql_1 = `SELECT DISTINCT itemName
   //           FROM items AS i
@@ -242,13 +244,13 @@ app.post('/submit-form', (req, res) => {
   console.log(`this is the ${userID}`);
 
 
-  test = itemCategory.split(' ');
-  e = `(LAST_INSERT_ID() , ${test[0]} ) ;`;
-  console.log(e);
+  // test = itemCategory.split(' ');
+  // e = `(LAST_INSERT_ID() , ${test[0]} ) ;`;
+  // console.log(e);
 
-  for(i = 1; i < test.length; i++){
-    e = `(LAST_INSERT_ID() , ${test[i]} )` + e;
-  }
+  // for (i = 1; i < test.length; i++) {
+  //   e = `(LAST_INSERT_ID() , ${test[i]} )` + e;
+  // }
 
   // Prepare the SQL statement
   // const sql = `
@@ -260,66 +262,44 @@ app.post('/submit-form', (req, res) => {
   //   ${e}
   // COMMIT;`;
 
-  const sql = `INSERT INTO items (itemName, itemDescription, itemPrice, userID, category)
-  VALUES (?, ?, ?, ?,? )`;
+  const itmCount = `SELECT COUNT(*) FROM projectdb.items WHERE projectdb.items.date = date AND userID = '${userID}';`;
 
+  connection.query(itmCount, (error, result) => {
+    if (error) {
+      console.error('Error grabbing count ' + error.message);
 
-  const itmCount= "SELECT COUNT(*) FROM projectdb.items WHERE projectdb.items.date = date AND userID ='"+userID+"'";
+    } else {
 
+      const count = result[0]['COUNT(*)'];
+      console.log(count);
 
+      if (count >= 3) {
+        res.json({
+          status: "item not submitted"
+        });
+      }
+      else {
+        const sql = `INSERT INTO items (itemName, itemDescription, itemPrice, userID, category, date)
+                   VALUES (?, ?, ?, ?, ?, ? );`;
 
-
-  connection.query(itmCount, 
-    (error, result) => {
-      if (error) {
-        console.error('Error grabbing count ' + error.message);
-        
-      } else {
-
-               const count = result[0]['COUNT(*)'];
-               console.log(count);
-                
-               if(count>=3){
-                res.json({
-                  status: "item not submitted"
-                });
-               }
-               else{
-                const sql = `INSERT INTO items (itemName, itemDescription, itemPrice, userID, category,date)
-                   VALUES (?, ?, ?, ?,?,? )`;
-
-                     // Execute the SQL statement with parameters
-                           connection.query(sql, [itemName, itemDescription, itemPrice, userID,itemCategory, curdate], (err, result) => {
-                           if (err) {
-                               console.error('Error inserting item: ' + err.message);
-                               res.send('Error inserting item');
-                        } else {
-                            console.log(result);
-                             //const itemID = result.insertId; // Get the auto-incremented itemID after the insert
-                                console.log('Form successfully submitted');
-                                     res.json({
-                                          status: "Form Successfully submitted"
-                                 });
-                                 }
-                                  });
-                  
-                
-                              }
-               
-
-       
-        
-                                    }});
-
-
-
-
-
-
-  
-
+        // Execute the SQL statement with parameters
+        connection.query(sql, [itemName, itemDescription, itemPrice, userID, itemCategory, curdate], (err, result) => {
+          if (err) {
+            console.error('Error inserting item: ' + err.message);
+            res.send('Error inserting item');
+          } else {
+            console.log(result);
+            //const itemID = result.insertId; // Get the auto-incremented itemID after the insert
+            console.log('Form successfully submitted');
+            res.json({
+              status: "Form Successfully submitted"
+            });
+          }
+        });
+      }
+    }
+  });
   // Prepare the SQL statement
-  
 });
 
 
