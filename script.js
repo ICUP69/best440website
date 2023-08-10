@@ -47,11 +47,173 @@ const revCancel = document.querySelector('.cancel_rev');
 const signUp = [newFirstname, newLastname, newEmail, newUsername, newPassword, confirmPassword];
 const logIn = [usernameLogin, passwordLogin];
 
-let currentUser;
-let selectedItem;
-let selectedItemUser;
 
-//Functions
+class userSession {
+
+    #currentUser;
+    #selectedItem;
+    #selectedItemUser;
+
+    constructor(currentUser) {
+        this.currentUser = currentUser;
+        /////Search table function 
+        search.addEventListener('click', this._search.bind(this));
+
+        add.addEventListener('click', this._add.bind(this));
+
+        reviewSubmit.addEventListener('click', this._review.bind(this));
+
+        document.addEventListener("click", this.openReview.bind(this));
+    }
+
+
+    displayList = (data) => {
+        table.innerHTML = ' ';
+
+        let dataCopy = data;
+
+        dataCopy.forEach(data => {
+            let html =
+                ` <div class="table--row">
+            <div class="product--name">${data.itemName} </div>
+            <div class="prodcut--description">
+                <div class="product--price"> Price: $ ${data.itemPrice}  </div>
+                <div class="product--ID"> ID: ${data.itemID}</div>
+                <div class="product--I"> Seller: ${data.userID}</div>
+                <div class="product--d"> Description: ${data.itemDescription}</div>
+            </div>
+    
+            <button class="review_btn"> view Reviews </button>
+                `;
+
+            table.insertAdjacentHTML('afterbegin', html);
+        });
+    };
+
+    async _search(e) {
+        e.preventDefault();
+
+        let itemName = searchTitle.value;
+        let itemDescription = searchDescription.value;
+        let itemPrice = searchPrice.value;
+        let category = searchCategory.value;
+
+        ///Send data we used for search option to backend and it will return said tables? 
+        // const data = { title, description, category, price };
+        const data = { itemName, itemDescription, itemPrice, category };
+        console.log(data);
+        const options = {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data)
+        };
+
+        const response = await fetch('/search', options);
+        const json = await response.json();
+        // console.log(json);
+
+        this.displayList(json.data);
+    }
+
+    async _add(event) {
+        event.preventDefault(); // Prevent default form submission behavior
+        //defining my variables to get values
+        let itemName = searchTitle.value;
+        let itemDescription = searchDescription.value;
+        let itemPrice = searchPrice.value;
+        let category = searchCategory.value;
+
+
+        //checking for valid inputs
+        if (itemName === "" || itemDescription === "" || itemPrice === "" || category === "") {
+            window.alert("Please fill in all values");
+            return;
+        }
+
+        console.log(currentUser);
+        const data = { itemName, itemDescription, itemPrice, category, currentUser };
+
+        // //getting response from server
+        // const form = event.target;
+        // const formData = new FormData(form);
+        try {
+            const options = {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data)
+            };
+
+            const response = await fetch('/submit-form', options);
+            const json = await response.json();
+        } catch (error) {
+            console.error('Error submitting form:', error);
+        }
+    }
+
+    async _review(e) {
+        e.preventDefault();
+        let Rating = reviewRate.value;
+        let Review = userReview.value;
+        let item  = this.selectedItem; 
+        let user = this.currentUser;
+        console.log(reviewRate.value);
+
+        if (this.selectedItemUser === this.currentUser) {
+            alert('Cannot review own items');
+            return;
+        }
+
+        const data = { Rating, Review, item, user };
+        const options = {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data)
+        };
+
+        const response = await fetch('/submit-review', options);
+        const json = await response.json();
+        console.log(json);
+
+        reviewTab.classList.add('hidden');
+    }
+
+    openReview(e) {
+        const target = e.target.closest('.review_btn');
+        if (target) {
+
+            if (!reviewTab.classList.contains('hidden')) return;
+            reviewTab.classList.remove('hidden');
+
+            //grab user ID FROM Selected review tab
+            const grabParent = target.parentNode.childNodes[3];
+            const getID = grabParent.childNodes[3];
+            const getUser = grabParent.childNodes[5];
+            this.selectedItemUser = getUser.textContent.slice(9);
+            this.selectedItem = getID.textContent.slice(5);
+        }
+    }
+
+    _setCurrentUser(input) {
+        this.currentUser = input;
+    }
+
+    _getCurrentUser() {
+        return this.currentUser;
+    }
+
+};
+
+
+
+let app = new userSession();
+
+/////////Functions FOR 
 const openWindow = (l) => {
     l.classList.remove('hidden');
     backgroundWindow.classList.remove('hidden');
@@ -77,32 +239,10 @@ const LoggedIn = (user) => {
     accountBtn.classList.add('hidden');
     loginBtn.classList.add('hidden');
     welcomeUser.textContent = `Welcome back ${user}`;
-    // app._setCurrentUser(user);
-    // console.log(app._getCurrentUser());
+    app._setCurrentUser(user);
+    console.log(app._getCurrentUser());
 };
 
-const displayList = (data) => {
-    table.innerHTML = ' ';
-
-    dataCopy = data;
-
-    dataCopy.forEach(data => {
-        let html =
-            ` <div class="table--row">
-        <div class="product--name">${data.itemName} </div>
-        <div class="prodcut--description">
-            <div class="product--price"> Price: $ ${data.itemPrice}  </div>
-            <div class="product--ID"> ID: ${data.itemID}</div>
-            <div class="product--I"> Seller: ${data.userID}</div>
-            <div class="product--d"> Description: ${data.itemDescription}</div>
-        </div>
-
-        <button class="review_btn"> view Reviews </button>
-            `;
-
-        table.insertAdjacentHTML('afterbegin', html);
-    });
-};
 
 //////////////////////////////////////////////////
 //////////////////////////////////////////////Event Listeners
@@ -114,12 +254,14 @@ signOutBtn.addEventListener('click', function (e) {
     loginBtn.classList.remove('hidden');
     userPage.classList.add('hidden');
     currentUser = '';
-    //app._setCurrentUser('');
+    app._setCurrentUser();
+    console.log(app._getCurrentUser());
 });
 
 loginBtn.addEventListener('click', function (e) {
     e.preventDefault();
     openWindow(loginWindow);
+    console.log(app._getCurrentUser());
 });
 
 accountBtn.addEventListener('click', function (e) {
@@ -138,22 +280,7 @@ revCancel.addEventListener('click', async function (e) {
     reviewTab.classList.add('hidden');
 });
 
-document.addEventListener("click", function (e) {
-    const target = e.target.closest('.review_btn');
-    if (target) {
 
-        if (!reviewTab.classList.contains('hidden')) return;
-        reviewTab.classList.remove('hidden');
-
-        //grab user ID FROM Selected review tab
-        const grabParent = target.parentNode.childNodes[3];
-        const getID = grabParent.childNodes[3];
-        const getUser = grabParent.childNodes[5];
-        selectedItemUser = getUser.textContent.slice(9);
-        selectedItem = getID.textContent.slice(5);
-
-    }
-});
 
 //////////////////////////////SQL ACTIONS 
 
@@ -180,7 +307,7 @@ confirmSignUp.addEventListener('click', async function (e) {
     if (firstName === '' || lastName === '' || email === '' || username === '' || password === '') {
         alert('missing fields');
         return;
-    } 
+    }
 
     console.log("match");
 
@@ -259,6 +386,7 @@ confirmLogin.addEventListener('click', async function (e) {
 });
 
 
+/*
 search.addEventListener('click', async function (e) {
     e.preventDefault();
 
@@ -335,7 +463,7 @@ reviewSubmit.addEventListener('click', async function (e) {
         return;
     }
 
-    const data = { Rating, Review, selectedItem, currentUser};
+    const data = { Rating, Review, selectedItem, currentUser };
     const options = {
         method: 'POST',
         headers: {
@@ -353,7 +481,7 @@ reviewSubmit.addEventListener('click', async function (e) {
 
 });
 
-
+*/
 
 
 

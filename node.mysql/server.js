@@ -323,10 +323,12 @@ app.post('/submit-form', (req, res) => {
 
 app.post('/submit-review', (req, res) => {
   // Access form data using req.body
-  const itemID = req.body.selectedItem;
+  // const itemID = req.body.selectedItem;
+  const itemID = req.body.item;
+  const user = req.body.user;
   const Rate = req.body.Rating;
   const Review = req.body.Review;
-  const user = req.body.currentUser;
+  // const user = req.body.currentUser;
   const curdate = new Date().toJSON().slice(0, 10);
 
   const revCount = `SELECT COUNT(*) FROM projectdb.review WHERE projectdb.review.date = date AND username ='${user}';`;
