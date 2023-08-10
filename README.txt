@@ -9,7 +9,9 @@ Phase 2: Designed the user form and list display and implemented the search feat
 
 --------------------------------------------------------------------
 
-Alfredo Gonzalez: Fixed a bug where querying an unknown user caused a crash. Fixed a block of code responsible for correctly pathing to the right files. Added a line of code to help mitigate sql injection.
+Alfredo Gonzalez: 
+Phase 1: Fixed a bug where querying an unknown user caused a crash. Fixed a block of code responsible for correctly pathing to the right files. Added a line of code to help mitigate sql injection.
+Phase 2: Implemented the ability to add an item to the database. Set the html code to be able to display the table of relevant search functions.
              
 ---------------------------------------------------------------------
 
