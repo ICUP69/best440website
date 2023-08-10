@@ -124,6 +124,7 @@ class userSession {
         let itemDescription = searchDescription.value;
         let itemPrice = searchPrice.value;
         let category = searchCategory.value;
+        let user = this.currentUser;
 
 
         //checking for valid inputs
@@ -133,7 +134,7 @@ class userSession {
         }
 
         console.log(currentUser);
-        const data = { itemName, itemDescription, itemPrice, category, currentUser };
+        const data = { itemName, itemDescription, itemPrice, category, user };
 
         // //getting response from server
         // const form = event.target;

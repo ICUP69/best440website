@@ -256,7 +256,8 @@ app.post('/submit-form', (req, res) => {
   const itemDescription = req.body.itemDescription;
   const itemCategory = req.body.category;
   const itemPrice = req.body.itemPrice;
-  const userID = req.body.currentUser; // Replace this with the actual user ID (if you have a login system)
+  //const userID = req.body.currentUser; // Replace this with the actual user ID (if you have a login system)
+  const userID = req.body.user; 
   const curdate = new Date().toJSON().slice(0, 10);
   console.log(`this is the ${userID}`);
 
