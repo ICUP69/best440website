@@ -76,7 +76,7 @@ app.post('/signup', (request, response) => {
         status: status1,
         firstN: data.firstName,
         lastN: data.lastName
-      })
+      });
       return console.error('error: ' + req.message);
     }
     console.log("INSERTED INTO DB account ");
@@ -159,9 +159,21 @@ app.post('/search', (request, response) => {
   const category = data.category;
   const price = data.itemPrice;
   const description = data.itemDescription;
-  let e = ` `;
+  console.log(`this is ${description} ----`);
 
-  const sql = `SELECT * FROM projectdb.items WHERE (category LIKE '%${category}%') or (itemName LIKE '%${search}%') or (itemDescription LIKE '%${description}%') ;`;
+  let e = ` `;
+  if (description !== '') {
+    console.log('trueeee');
+    e = `or (itemDescription LIKE '%${description}%')` + e;
+  }
+
+  if (price !== '') {
+    e = `or (itemDescription LIKE '%${description}%')` + e;
+  }
+
+  console.log(`eeeeee is ${e}`);
+
+  const sql = `SELECT * FROM projectdb.items WHERE (category LIKE '%${category}%') or (itemName LIKE '%${search}%') ${e} ;`;
 
   connection.query(sql, (error, result) => {
     if (error) {
@@ -314,38 +326,36 @@ app.post('/submit-review', (req, res) => {
 
   const revCount = `SELECT COUNT(*) FROM projectdb.review WHERE projectdb.review.date = date AND username ='${user}';`;
 
-  connection.query(revCount,
-    (error, result) => {
-      if (error) {
-        console.error('Error grabbing count ' + error.message);
-      } else {
-        const count = result[0]['COUNT(*)'];
-        console.log(count);
-
-        if (count >= 3) {
-          res.json({
-            status: "Review not submitted"
-          });
-        }
-        else {  // Prepare the SQL statement
-          const sql = ` INSERT INTO review (idreview, username, review, date, rating) VALUES (?,?,?,?,?) `;
-
-          // Execute the SQL statement with parameters
-          connection.query(sql, [itemID, user, Review, curdate, Rate], (err, result) => {
-            if (err) {
-              console.error('Error inserting item: ' + err.message);
-              res.send('Error inserting item');
-            } else {
-              console.log(result);
-              console.log('REVIEW successfully submitted');
-              res.json({
-                status: "Review Successfully submitted"
-              });
-            }
-          });
-        }
+  connection.query(revCount, (error, result) => {
+    if (error) {
+      console.error('Error grabbing count ' + error.message);
+    } else {
+      const count = result[0]['COUNT(*)'];
+      console.log(count);
+      if (count >= 3) {
+        res.json({
+          status: "Review not submitted"
+        });
       }
-    });
+      else {  // Prepare the SQL statement
+        const sql = ` INSERT INTO review (idreview, username, review, date, rating) VALUES (?,?,?,?,?) `;
+
+        // Execute the SQL statement with parameters
+        connection.query(sql, [itemID, user, Review, curdate, Rate], (err, result) => {
+          if (err) {
+            console.error('Error inserting item: ' + err.message);
+            res.send('Error inserting item');
+          } else {
+            console.log(result);
+            console.log('REVIEW successfully submitted');
+            res.json({
+              status: "Review Successfully submitted"
+            });
+          }
+        });
+      }
+    }
+  });
 });
 
 
