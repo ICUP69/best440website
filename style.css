@@ -4,10 +4,6 @@
   box-sizing: border-box;
 }
 
-/* body{
-  background-color: #454545;
-} */
-
 .window--background {
   position: fixed;
   top: 0;
@@ -243,7 +239,7 @@
   color: red;
 
 }
-/*                                                                                  Home Page CSS                                                           */
+
 .Welcome--nav {
   display: inline-flex;
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
@@ -257,12 +253,10 @@
 
 .user--page {
   position: relative;
-  display: flex;
 }
 
 .user--Form {
-  flex:1;
-  position: relative;
+  position: absolute;
   padding: 90px 20px;
   /* margin-top: 5%; */
   /* margin-left: 10px; */
@@ -304,17 +298,12 @@
   font-size: 25px;
 }
 
-.buttondiv{
-  display: flex;
-  justify-content: space-between;
-}
-
 .search--Btn {
-  position: relative;
+  position: absolute;
   padding: 20px 60px;
   background-color: chartreuse;
   font-size: 20px;
-  margin-left: 0px;
+  margin: 150px 0px 0px -130px;
   font-size: 20px;
   cursor: pointer;
   border-radius: 15px;
@@ -322,21 +311,25 @@
 
 .add--Btn {
   position: relative;
+  display: inline-flex;
   left: 60px;
-  padding: 20px 60px;
-  background-color: chartreuse;
-  font-size: 20px;
+  padding: 20px 20px;  
+  background-color: crimson;
   font-size: 20px;
   cursor: pointer;
   border-radius: 15px;
 }
-
 .table--display {
-  position: relative;
+  position: absolute;
   /* display: grid; */
-  flex: 1;
+  left: 40%;
+  margin: 40px 100px 0px 0px;
+  /* margin: 100px 100px 0px 50%; */
+  /* padding: 20px 0px;  */
+  width: 900px;
+  height: 700px;
+  background-color: white;
   overflow: scroll;
-  border: solid black;
 }
 
 .table--row {
@@ -346,3 +339,58 @@
   background-color: white;
   border: 1px solid black
 }
+
+.review_btn{
+    display: grid; 
+}
+
+.review{
+  position: fixed;
+  top: 16%;
+  left: 45%;
+  width: 40%;
+  height: 530px;
+  background-color: grey;
+  box-shadow: 0 4rem 6rem rgba(0, 0, 0, 0.3);
+  z-index: 1500;
+  transition: all;  
+}
+
+.review--form{
+  padding-left: 30px;
+}
+
+
+.cancel_rev{
+  font-size: 10px; 
+  width: 70px; 
+  height: 30px; 
+  background-color: grey;
+  border: 2px solid black;
+}
+
+.submit_rev:hover {
+  background-color: #4CAF50; 
+  color: white;
+}
+
+.cancel_rev:hover {
+  background-color: #f01111; 
+  color: white;
+}
+
+
+.rev_structure{
+  margin-top: 30px;
+  display: flex;
+}
+
+textarea {
+  resize: none;
+}
+.submit_rev {
+  margin-left: 48px;
+}
+/* .prodcut--description{
+  display: grid; 
+} */

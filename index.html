@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="script.js"></script>
+
     <link rel="stylesheet" href="style.css" />
     <title>Document</title>
 </head>
 
 <body id="wrapper">
-    <!-- NAV BAR -->
+    <!-- NAVIGATION BAR -->
     <nav class="nav">
         <ul class="nav_list me-auto">
             <li class="Welcome--nav "> </li>
@@ -20,6 +21,7 @@
     </nav>
 
     <div class="window--background hidden"> </div>
+
     <!-- WINDOWS FOR LOGIN & ACCOUNT Sign up  (Refactor this Segment later?)-->
     <div class="window--login hidden">
         <h1 class="Title_form"> Welcome! </h1>
@@ -77,8 +79,99 @@
             </div>
 
             <button class="btn2"> Sign up </button>
+
         </form>
+
+
+
     </div>
     <!-- End of login/signup segment  -->
+
+    <!-- SEARCH FORM  & Body-->
+    <div class="user--page hidden">
+        <div class="user--Form">
+            <form>
+                <div class="title">
+                    <label style="padding-right: 10px;"> Title: </label>
+                    <input class="title-input" size="20" style="font-size: 28px;" type="text">
+                </div>
+
+                <div class="description">
+                    <label style="padding-right: 10px;"> Description: </label>
+                    <input class="desc-input" size="16" style="font-size: 25px;" type="text">
+                </div>
+
+                <div class="category">
+                    <label style="padding-right: 10px;"> Category: </label>
+                    <input class="cate-input" size="18" style="font-size: 25px;" type="text">
+                </div>
+
+                <div class="price">
+                    <label style="padding-right: 10px;"> Price: </label>
+                    <input class="price-input" size="10" style="font-size: 25px;" type="text">
+                </div>
+
+                <button class="add--Btn"> Add Item </button>
+
+                <button class="search--Btn"> Search </button>
+            </form>
+
+            <div class="Filter">
+                <div>
+                    <label for="accept">
+                        <input type="checkbox" class="Max--category" name="accept"> Max of category
+                    </label><br>
+                    <input type="radio" id="maxCat" name="option" value="Max of Category">
+                    <label for="maxCat">Max of Category</label><br>
+                    <input type="radio" id="poorRev" name="option" value="Poor Reviews">
+                    <label for="poorRev">Poor Reviews</label><br>
+                    <input type="radio" id="noneOption" name="option" value="None" checked>
+                    <label for="noneOption">No filter</label><br>
+
+                </div>
+                
+                
+            </div>
+        </div>
+
+
+        <div class="table--display">
+
+
+        </div>
+
+        <div class="review hidden">
+            <button class="cancel_rev"> « Go Back </button>
+
+            <div class="review--form">
+                <form>
+                    <label for="rate">Choose a rating:</label>
+                    <select name="rating" class="rate">
+                        <option value="excellent">excellent</option>
+                        <option value="good">good</option>
+                        <option value="fair">fair</option>
+                        <option value="poor">poor</option>
+                    </select>
+
+                    <div class="rev_structure">
+                        <label class="review--des"> review: </label>
+                        <textarea id="review_desc" rows="5" cols="30"></textarea>
+                    </div>
+
+                    <button class="submit_rev"> Submit </button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+
+
+
+    </div>
+
+    <script src="script.js"></script>
+
 </body>
+
 </html>

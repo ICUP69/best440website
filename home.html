@@ -62,8 +62,32 @@
                 </tbody>
             </table>
         </div>
-
     </div>
+
+
+    <div class="review hidden"> 
+        <div class="review--form">
+            <button class="cancel_rev"> Cancel </button>
+            <form class="review_form">
+                <label for="rate">Choose a rating:</label> 
+                    <select name="rating" id="rate"> 
+                      <option value="excellent">excellent</option> 
+                      <option value="good">good</option> 
+                      <option value="fair">fair</option> 
+                      <option value="poor">poor</option> 
+                     </select>
+
+                <div class="form_structure">
+
+                    <label class="review--des"> review: </label>
+                    <input class="rev disc" type="textarea" />
+                </div>
+
+                <button class="submit_rev"> Submit </button>
+            </form>
+        </div>
+    </div>
+
   <script src="home.js"></script>
 </body>
 </html>
