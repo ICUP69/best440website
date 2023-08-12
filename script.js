@@ -26,7 +26,6 @@ const errorLoginMsg = document.querySelector('.errorLgn');
 const userPage = document.querySelector('.user--page');
 
 ///User form inputs 
-
 const searchTitle = document.querySelector('.title-input');
 const searchDescription = document.querySelector('.desc-input');
 const searchCategory = document.querySelector('.cate-input');
@@ -41,6 +40,10 @@ const reviewRate = document.querySelector('.rate');
 const reviewSubmit = document.querySelector('.submit_rev');
 const userReview = document.getElementById('review_desc');
 const revCancel = document.querySelector('.cancel_rev');
+
+
+////ALL FILTER INPUTS 
+const max_Category = document.querySelector('.Max--category');
 
 
 
@@ -72,7 +75,7 @@ class userSession {
 
         let dataCopy = data;
 
-        dataCopy.forEach(data => {
+        dataCopy.slice().reverse().forEach(data => {
             let html =
                 ` <div class="table--row">
             <div class="product--name">${data.itemName} </div>
@@ -80,7 +83,9 @@ class userSession {
                 <div class="product--price"> Price: $ ${data.itemPrice}  </div>
                 <div class="product--ID"> ID: ${data.itemID}</div>
                 <div class="product--I"> Seller: ${data.userID}</div>
+                <div class="product--A"> Category: ${data.Category}</div>
                 <div class="product--d"> Description: ${data.itemDescription}</div>
+
             </div>
     
             <button class="review_btn"> view Reviews </button>
@@ -92,15 +97,15 @@ class userSession {
 
     async _search(e) {
         e.preventDefault();
-
         let itemName = searchTitle.value;
         let itemDescription = searchDescription.value;
         let itemPrice = searchPrice.value;
         let category = searchCategory.value;
+        let maxCateg = max_Category.checked;
 
         ///Send data we used for search option to backend and it will return said tables? 
         // const data = { title, description, category, price };
-        const data = { itemName, itemDescription, itemPrice, category };
+        const data = { itemName, itemDescription, itemPrice, category , maxCateg};
         console.log(data);
         const options = {
             method: 'POST',
@@ -133,7 +138,6 @@ class userSession {
             return;
         }
 
-        console.log(currentUser);
         const data = { itemName, itemDescription, itemPrice, category, user };
 
         // //getting response from server
@@ -150,6 +154,8 @@ class userSession {
 
             const response = await fetch('/submit-form', options);
             const json = await response.json();
+            
+            alert(json.status);
         } catch (error) {
             console.error('Error submitting form:', error);
         }
@@ -159,7 +165,7 @@ class userSession {
         e.preventDefault();
         let Rating = reviewRate.value;
         let Review = userReview.value;
-        let item  = this.selectedItem; 
+        let item = this.selectedItem;
         let user = this.currentUser;
         console.log(reviewRate.value);
 
@@ -209,7 +215,6 @@ class userSession {
     }
 
 };
-
 
 
 let app = new userSession();
@@ -385,6 +390,7 @@ confirmLogin.addEventListener('click', async function (e) {
         acc.value = '';
     });
 });
+
 
 
 /*

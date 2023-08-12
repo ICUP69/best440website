@@ -159,92 +159,64 @@ app.post('/search', (request, response) => {
   const category = data.category;
   const price = data.itemPrice;
   const description = data.itemDescription;
-  console.log(`this is ${description} ----`);
-
-
+  const max_Category = data.maxCateg;
   let e = ` `;
-  
+  let filter_max = ' ';
+
+  categoryTest = data.category.split(' ');
+  console.log(categoryTest);
+  console.log(max_Category);
+
+  if (max_Category) {
+    filter_max = `, itemPrice desc`
+  }
+
+  e = `(c.categories LIKE'${categoryTest[0]}')`;
+
+  for (i = 1; i < categoryTest.length; i++) {
+    if (categoryTest[i] !== '') {
+      e = e + ` or (c.categories LIKE '%${categoryTest[i]}%') `;
+    }
+  }
+
   if (search !== '') {
-    e = ` or (itemName LIKE '%${search}%')` + e;
+    e = e + ` or (i.itemName LIKE '%${search}%')`;
   }
-
   if (description !== '') {
-    e = `or (itemDescription LIKE '%${description}%')` + e;
+    e = e + ` or (i.itemDescription LIKE '%${description}%')`;
   }
-
   if (price !== '') {
-    e = `or (itemDescription LIKE '%${description}%')` + e;
+    e = e + ` and (i.itemPrice <= '${price}')`;
   }
 
-  console.log(`eeeeee is ${e}`);
+  //const sql = `SELECT * FROM projectdb.items WHERE (category LIKE '%${category}%') ${e} ;`;
 
-  const sql = `SELECT * FROM projectdb.items WHERE (category LIKE '%${category}%') ${e} ;`;
+
+  const sql = `SELECT i.itemID, i.itemName, i.itemDescription, itemPrice, i.userID, GROUP_CONCAT( c.categories ) as Category 
+  FROM items as i JOIN categories as c ON c.ID = i.itemID 
+  WHERE ${e}
+  group by i.itemID,i.itemID, i.itemName, i.itemDescription, itemPrice , i.userID
+  order by Category ${filter_max} ;`;
+
+  console.log(sql);
+
 
   connection.query(sql, (error, result) => {
     if (error) {
       console.error('Error gcategory: ' + error.message);
-    }
-    else {
-      let passField = JSON.parse(JSON.stringify(result));
-      response.json({
-        data: passField,
-      });
-
-    }
-  });
-
-
-  //turn category into a array of string 
-  /* test = data.category.split(' ');
-   console.log(test);
- 
-   test.forEach(value => {
-     e = ` or (categories = '${value}')` + e;
-   });
- 
-   */
-
-  // let sql_1 = `SELECT DISTINCT itemName
-  //           FROM items AS i
-  //           WHERE EXISTS (SELECT categories
-  //           FROM categories AS c
-  //           WHERE (c.ID = i.itemID) AND ((i.itemName = '${search}') or (i.itemPrice >= '${price}') ${e} ) ); `;
-
-
-
-  ///RETRIEVE SEARCH FOR NAME, PRICE AND CATEGORY AND RETURNS REMAINING NOT LISTED 
-  /*let sql_1 = 
-  `SELECT DISTINCT *
-  FROM items AS i 
-  WHERE NOT EXISTS (SELECT categories 
-  FROM categories AS c 
-  WHERE (c.ID = i.itemID) 
-  AND ( (i.itemName like '%${search}%') ${e} ) )
-  union all 
-  SELECT DISTINCT * 
-  FROM items AS i 
-  WHERE EXISTS (SELECT categories 
-  FROM categories AS c 
-  WHERE (c.ID = i.itemID) 
-  AND ( (i.itemName like '%${search}%') ${e} ) );`;
-
-/*  let insertInto = connection.query(sql_1, (error, results, fields) => {
-    if (error) {
-      status1 = 'error';
       response.json({
         status: status1,
       });
-      return console.error('error: ' + error.message);
+      throw error;
     }
-
-    let passField = JSON.parse(JSON.stringify(results));
-    // console.log(passField);
-
+    // console.log(result);
+    let passField = JSON.parse(JSON.stringify(result));
     response.json({
       data: passField,
     });
 
-  });*/
+  });
+
 
 });
 
@@ -257,28 +229,18 @@ app.post('/submit-form', (req, res) => {
   const itemCategory = req.body.category;
   const itemPrice = req.body.itemPrice;
   //const userID = req.body.currentUser; // Replace this with the actual user ID (if you have a login system)
-  const userID = req.body.user; 
+  const userID = req.body.user;
   const curdate = new Date().toJSON().slice(0, 10);
   console.log(`this is the ${userID}`);
 
+  let e = ` `;
+  test = itemCategory.split(' ');
+  e = `(LAST_INSERT_ID(),'${test[0]}');`;
 
-  // test = itemCategory.split(' ');
-  // e = `(LAST_INSERT_ID() , ${test[0]} ) ;`;
-  // console.log(e);
-
-  // for (i = 1; i < test.length; i++) {
-  //   e = `(LAST_INSERT_ID() , ${test[i]} )` + e;
-  // }
-
-  // Prepare the SQL statement
-  // const sql = `
-  // BEGIN;
-  // INSERT INTO items (itemName, itemDescription, itemPrice, userID)
-  //   VALUES (?, ?, ?, ?);
-  // INSERT INTO categories 
-  //   VALUES 
-  //   ${e}
-  // COMMIT;`;
+  for (i = 1; i < test.length; i++) {
+    e = `(LAST_INSERT_ID(),'${test[i]}'), ` + e;
+  }
+  console.log(e);
 
   const itmCount = `SELECT COUNT(*) FROM projectdb.items WHERE projectdb.items.date = date AND userID = '${userID}';`;
 
@@ -297,9 +259,63 @@ app.post('/submit-form', (req, res) => {
         });
       }
       else {
-        const sql = `INSERT INTO items (itemName, itemDescription, itemPrice, userID, category, date)
+
+        const sql = `
+        INSERT INTO items (itemName, itemDescription, itemPrice, userID, category, date)
                    VALUES (?, ?, ?, ?, ?, ? );`;
 
+        const sql_1 = `
+        INSERT INTO categories
+                   VALUES ${e};`;
+
+        connection.beginTransaction(function (err) {
+          if (err) {
+            console.error('Error inserting item: ' + err.message);
+            res.send('Error inserting item');
+            connection.rollback(function () {
+              throw err;
+            });
+          }
+
+          connection.query(sql, [itemName, itemDescription, itemPrice, userID, itemCategory, curdate], (err, result) => {
+            if (err) {
+              console.error('Error inserting item: ' + err.message);
+              res.send('Error inserting item');
+              connection.rollback(function () {
+                throw err;
+              });
+            }
+
+            connection.query(sql_1, (err, result) => {
+              if (err) {
+                console.error('Error inserting item: ' + err.message);
+                res.send('Error inserting item');
+                connection.rollback(function () {
+                  throw err;
+                });
+              }
+
+              connection.commit(function (err) {
+                if (err) {
+                  console.error('Error inserting item: ' + err.message);
+                  res.send('Error inserting item');
+                  connection.rollback(function () {
+                    throw err;
+                  });
+                }
+                console.log(result);
+                //const itemID = result.insertId; // Get the auto-incremented itemID after the insert
+                console.log('Form successfully submitted');
+                res.json({
+                  status: "Form Successfully submitted"
+                });
+              });
+            });
+          });
+
+        });
+
+        /*
         // Execute the SQL statement with parameters
         connection.query(sql, [itemName, itemDescription, itemPrice, userID, itemCategory, curdate], (err, result) => {
           if (err) {
@@ -313,7 +329,8 @@ app.post('/submit-form', (req, res) => {
               status: "Form Successfully submitted"
             });
           }
-        });
+        }); */
+
       }
     }
   });
@@ -367,5 +384,20 @@ app.post('/submit-review', (req, res) => {
 });
 
 
+/*
+SELECT i.itemID , GROUP_CONCAT( c.categories ) as Category 
+FROM items as i JOIN categories as c ON c.ID = i.itemID 
+WHERE (c.categories LIKE '%electronic%') or (c.categories LIKE '%apple%') or (c.categories LIKE '%food%') or (c.categories LIKE '%education%') 
+group by i.itemID
+order by Category; */
 
-
+/*
+WITH UserItemCount AS (
+  SELECT userID, COUNT(*) AS item_count
+  FROM projectdb.items
+  WHERE DATE(date) = '2023-08-11'
+  GROUP BY userID
+)
+SELECT userID, item_count
+FROM UserItemCount
+WHERE item_count = (SELECT MAX(item_count) FROM UserItemCount); */
