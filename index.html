@@ -88,7 +88,7 @@
     <!-- End of login/signup segment  -->
 
     <!-- SEARCH FORM  & Body-->
-    <div class="user--page hidden">
+    <div class="user--page">
         <div class="user--Form">
             <form>
                 <div class="title">
@@ -118,15 +118,35 @@
 
             <div class="Filter">
                 <div>
-                    <label for="accept">
+                    <!-- <label for="accept">
                         <input type="checkbox" class="Max--category" name="accept"> Max of category
-                    </label>
-                </div>
-    
-                
-            </div>
-        </div>
+                    </label><br> -->
+                    <input type="radio" id="maxCat" name="option" value="Max of Category">
+                    <label for="maxCat">Max of Category</label><br>
+                    <input type="radio" id="poorRev" name="option" value="Poor Reviews">
+                    <label for="poorRev">Poor Reviews</label><br>
+                    <input type="radio" id="noneOption" name="option" value="None" checked>
+                    <label for="noneOption">No filter</label><br>
 
+                </div>
+
+                <div class="user--searchList">
+                    <div class="userX">
+                        <label style="padding-right: 10px;"> User X: </label>
+                        <input class="userx" size="10" style="font-size: 15px;" type="text">
+                    </div>
+
+
+                    <!-- <div class="userY">
+                        <label style="padding-right: 10px;"> User Y: </label>
+                        <input class="userY" size="10" style="font-size: 15px;" type="text">
+                    </div> -->
+
+                </div>
+
+            </div>
+
+        </div>
 
         <div class="table--display">
 

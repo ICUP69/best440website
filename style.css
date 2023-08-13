@@ -395,6 +395,15 @@ textarea {
 .submit_rev {
   margin-left: 48px;
 }
+
+.user--searchList{
+padding-top: 30px;
+}
+
+.userY{
+  margin-top: 5px;
+}
+
 /* .prodcut--description{
   display: grid; 
 } */

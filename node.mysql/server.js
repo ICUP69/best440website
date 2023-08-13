@@ -159,18 +159,15 @@ app.post('/search', (request, response) => {
   const category = data.category;
   const price = data.itemPrice;
   const description = data.itemDescription;
-  const max_Category = data.maxCateg;
+  //const max_Category = data.maxCateg;
+  const radioOption = data.radioOption;
+
+  let sql = '';
   let e = ` `;
+  let searchThis = '';
   let filter_max = ' ';
 
-  categoryTest = data.category.split(' ');
-  console.log(categoryTest);
-  console.log(max_Category);
-
-  if (max_Category) {
-    filter_max = `, itemPrice desc`
-  }
-
+  categoryTest = category.split(' ');
   e = `(c.categories LIKE'${categoryTest[0]}')`;
 
   for (i = 1; i < categoryTest.length; i++) {
@@ -179,27 +176,45 @@ app.post('/search', (request, response) => {
     }
   }
 
-  if (search !== '') {
-    e = e + ` or (i.itemName LIKE '%${search}%')`;
-  }
   if (description !== '') {
     e = e + ` or (i.itemDescription LIKE '%${description}%')`;
   }
+
   if (price !== '') {
     e = e + ` and (i.itemPrice <= '${price}')`;
   }
 
+  if (search !== '') {
+    searchThis = `(CASE WHEN (itemName LIKE '%${search}%') THEN 0 END) asc,`;
+  }
+
+  if (radioOption === 'Max of Category') {
+    filter_max = `, itemPrice asc`;
+  } 
+
   //const sql = `SELECT * FROM projectdb.items WHERE (category LIKE '%${category}%') ${e} ;`;
 
+  if (radioOption === 'Poor Reviews') {
+    //SQL query for poor reviews
+    sql = `SELECT r.idreview, r.username, r.review, r.date,
+      i.itemName, i.itemPrice, i.itemID, i.userID,
+      GROUP_CONCAT(c.categories) as Category, i.itemDescription
+      FROM projectdb.review AS r
+      JOIN items AS i ON r.idreview = i.itemID
+      JOIN categories AS c ON c.ID = i.itemID
+      WHERE r.rating = 'poor'
+      GROUP BY r.idreview, r.username, r.review, r.date,
+      i.itemName, i.itemPrice, i.itemID, i.userID, i.itemDescription;`;
 
-  const sql = `SELECT i.itemID, i.itemName, i.itemDescription, itemPrice, i.userID, GROUP_CONCAT( c.categories ) as Category 
+  } else {
+    sql = `SELECT i.itemID, i.itemName, i.itemDescription, itemPrice, i.userID, GROUP_CONCAT( c.categories ) as Category 
   FROM items as i JOIN categories as c ON c.ID = i.itemID 
   WHERE ${e}
   group by i.itemID,i.itemID, i.itemName, i.itemDescription, itemPrice , i.userID
-  order by Category ${filter_max} ;`;
+  order by ${searchThis} Category ${filter_max} ;`;
+  }
 
   console.log(sql);
-
 
   connection.query(sql, (error, result) => {
     if (error) {
@@ -211,6 +226,7 @@ app.post('/search', (request, response) => {
     }
     // console.log(result);
     let passField = JSON.parse(JSON.stringify(result));
+    //console.log(passField);
     response.json({
       data: passField,
     });
@@ -383,13 +399,6 @@ app.post('/submit-review', (req, res) => {
   });
 });
 
-
-/*
-SELECT i.itemID , GROUP_CONCAT( c.categories ) as Category 
-FROM items as i JOIN categories as c ON c.ID = i.itemID 
-WHERE (c.categories LIKE '%electronic%') or (c.categories LIKE '%apple%') or (c.categories LIKE '%food%') or (c.categories LIKE '%education%') 
-group by i.itemID
-order by Category; */
 
 /*
 WITH UserItemCount AS (

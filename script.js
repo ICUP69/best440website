@@ -70,12 +70,12 @@ class userSession {
     }
 
 
-    displayList = (data) => {
+    displayItemList = (data) => {
         table.innerHTML = ' ';
 
         let dataCopy = data;
 
-        dataCopy.slice().reverse().forEach(data => {
+        dataCopy.forEach(data => {
             let html =
                 ` <div class="table--row">
             <div class="product--name">${data.itemName} </div>
@@ -95,17 +95,43 @@ class userSession {
         });
     };
 
+    displayUserList = (data) => {
+        table.innerHTML = ' ';
+
+        let dataCopy = data;
+
+        dataCopy.forEach(data => {
+            let html =
+                ` <div class="table--row">
+            <div class="product--name"> User: ${data.userID} </div>
+            <div class="prodcut--description">
+                <div class="product--price"> Item: ${data.itemName}  </div>
+                <div class="product--ID"> ID: ${data.itemID}</div>
+                <div class="product--I"> Review by: ${data.username}</div>
+                <div class="product--A"> Review posted on ${data.date}: ${data.review}</div>
+                <div class="product--d"> Category: ${data.Category}</div>
+
+            </div>
+    
+            <button class="review_btn"> view Reviews </button>
+                `;
+
+            table.insertAdjacentHTML('afterbegin', html);
+        });
+    }
+
     async _search(e) {
         e.preventDefault();
         let itemName = searchTitle.value;
         let itemDescription = searchDescription.value;
         let itemPrice = searchPrice.value;
         let category = searchCategory.value;
-        let maxCateg = max_Category.checked;
+        let radioOption = document.querySelector('input[name="option"]:checked').value;
+        // let maxCateg = max_Category.checked;
 
         ///Send data we used for search option to backend and it will return said tables? 
         // const data = { title, description, category, price };
-        const data = { itemName, itemDescription, itemPrice, category , maxCateg};
+        const data = { itemName, itemDescription, itemPrice, category, radioOption };
         console.log(data);
         const options = {
             method: 'POST',
@@ -119,7 +145,13 @@ class userSession {
         const json = await response.json();
         // console.log(json);
 
-        this.displayList(json.data);
+
+        if (radioOption === 'Poor Reviews') {
+            this.displayUserList(json.data);
+        } else {
+            this.displayItemList(json.data);
+
+        }
     }
 
     async _add(event) {
@@ -154,7 +186,7 @@ class userSession {
 
             const response = await fetch('/submit-form', options);
             const json = await response.json();
-            
+
             alert(json.status);
         } catch (error) {
             console.error('Error submitting form:', error);
