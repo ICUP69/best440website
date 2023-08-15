@@ -159,8 +159,8 @@ app.post('/search', (request, response) => {
   const category = data.category;
   const price = data.itemPrice;
   const description = data.itemDescription;
-  //const max_Category = data.maxCateg;
   const radioOption = data.radioOption;
+  const searchUser = data.userSearch; 
 
   let sql = '';
   let e = ` `;
@@ -188,30 +188,53 @@ app.post('/search', (request, response) => {
     searchThis = `(CASE WHEN (itemName LIKE '%${search}%') THEN 0 END) asc,`;
   }
 
+
   if (radioOption === 'Max of Category') {
     filter_max = `, itemPrice asc`;
-  } 
+  }
 
-  //const sql = `SELECT * FROM projectdb.items WHERE (category LIKE '%${category}%') ${e} ;`;
+  switch (radioOption) {
+    case 'Poor Reviews':
+      sql = `SELECT r.idreview, r.username, r.review, r.date,
+    i.itemName, i.itemPrice, i.itemID, i.userID,
+    GROUP_CONCAT(c.categories) as Category, i.itemDescription
+    FROM projectdb.review AS r
+    JOIN items AS i ON r.idreview = i.itemID
+    JOIN categories AS c ON c.ID = i.itemID
+    WHERE r.rating = 'poor'
+    GROUP BY r.idreview, r.username, r.review, r.date,
+    i.itemName, i.itemPrice, i.itemID, i.userID, i.itemDescription;`;
+      break;
 
-  if (radioOption === 'Poor Reviews') {
-    //SQL query for poor reviews
-    sql = `SELECT r.idreview, r.username, r.review, r.date,
-      i.itemName, i.itemPrice, i.itemID, i.userID,
-      GROUP_CONCAT(c.categories) as Category, i.itemDescription
+    case 'mostItemsOn7/26':
+      sql = `WITH UserItemCount AS (
+        SELECT userID, COUNT(*) AS item_count
+        FROM projectdb.items
+        WHERE DATE(date) = '2023-08-11'
+        GROUP BY userID
+      )
+      SELECT userID, item_count
+      FROM UserItemCount
+      WHERE item_count = (SELECT MAX(item_count) FROM UserItemCount);`;
+      break;
+
+    case 'User-wth-excellent/good-ratings':
+      sql = `SELECT distinct i.itemName,i.itemDescription, i.itemPrice, i.userID, i.itemID, i.category as Category
       FROM projectdb.review AS r
-      JOIN items AS i ON r.idreview = i.itemID
-      JOIN categories AS c ON c.ID = i.itemID
-      WHERE r.rating = 'poor'
-      GROUP BY r.idreview, r.username, r.review, r.date,
-      i.itemName, i.itemPrice, i.itemID, i.userID, i.itemDescription;`;
+          JOIN items AS i ON r.idreview = i.itemID
+          where (i.userID = '${searchUser}')
+          group by i.itemName, i.itemDescription, i.itemPrice, i.userID , i.itemID, Category
+          having (GROUP_CONCAT(r.rating) not like '%poor%') and (GROUP_CONCAT(r.rating) not like '%fair%');
+          `;
+      break;
 
-  } else {
-    sql = `SELECT i.itemID, i.itemName, i.itemDescription, itemPrice, i.userID, GROUP_CONCAT( c.categories ) as Category 
-  FROM items as i JOIN categories as c ON c.ID = i.itemID 
-  WHERE ${e}
-  group by i.itemID,i.itemID, i.itemName, i.itemDescription, itemPrice , i.userID
-  order by ${searchThis} Category ${filter_max} ;`;
+    default:
+      sql = `SELECT i.itemID, i.itemName, i.itemDescription, itemPrice, i.userID, GROUP_CONCAT( c.categories ) as Category 
+    FROM items as i JOIN categories as c ON c.ID = i.itemID 
+    WHERE ${e}
+    group by i.itemID,i.itemID, i.itemName, i.itemDescription, itemPrice , i.userID
+    order by ${searchThis} Category ${filter_max} ;`;
+
   }
 
   console.log(sql);
@@ -410,3 +433,12 @@ WITH UserItemCount AS (
 SELECT userID, item_count
 FROM UserItemCount
 WHERE item_count = (SELECT MAX(item_count) FROM UserItemCount); */
+
+
+/*  SELECT distinct r.username, r.idreview, GROUP_CONCAT(r.rating) as Ratings
+  FROM projectdb.review AS r
+      JOIN items AS i ON r.idreview = i.itemID
+      -- where (r.rating not like '%poor%') and (r.rating not like '%fair%')
+      where (i.userID = 'harry')
+      group by r.username, r.idreview
+      having (GROUP_CONCAT(r.rating) not like '%poor%') and (GROUP_CONCAT(r.rating) not like '%fair%');*/

@@ -127,11 +127,12 @@ class userSession {
         let itemPrice = searchPrice.value;
         let category = searchCategory.value;
         let radioOption = document.querySelector('input[name="option"]:checked').value;
+        let userSearch = document.querySelector('.userx').value;
         // let maxCateg = max_Category.checked;
 
         ///Send data we used for search option to backend and it will return said tables? 
         // const data = { title, description, category, price };
-        const data = { itemName, itemDescription, itemPrice, category, radioOption };
+        const data = { itemName, itemDescription, itemPrice, category, radioOption, userSearch};
         console.log(data);
         const options = {
             method: 'POST',
@@ -146,11 +147,10 @@ class userSession {
         // console.log(json);
 
 
-        if (radioOption === 'Poor Reviews') {
+        if (radioOption === 'Poor Reviews' || radioOption === 'mostItemsOn7/26') {
             this.displayUserList(json.data);
         } else {
             this.displayItemList(json.data);
-
         }
     }
 
