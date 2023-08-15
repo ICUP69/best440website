@@ -201,7 +201,7 @@ app.post('/search', (request, response) => {
     FROM projectdb.review AS r
     JOIN items AS i ON r.idreview = i.itemID
     JOIN categories AS c ON c.ID = i.itemID
-    WHERE r.rating = 'poor'
+    WHERE r.rating = 'fair'
     GROUP BY r.idreview, r.username, r.review, r.date,
     i.itemName, i.itemPrice, i.itemID, i.userID, i.itemDescription;`;
       break;
@@ -422,23 +422,3 @@ app.post('/submit-review', (req, res) => {
   });
 });
 
-
-/*
-WITH UserItemCount AS (
-  SELECT userID, COUNT(*) AS item_count
-  FROM projectdb.items
-  WHERE DATE(date) = '2023-08-11'
-  GROUP BY userID
-)
-SELECT userID, item_count
-FROM UserItemCount
-WHERE item_count = (SELECT MAX(item_count) FROM UserItemCount); */
-
-
-/*  SELECT distinct r.username, r.idreview, GROUP_CONCAT(r.rating) as Ratings
-  FROM projectdb.review AS r
-      JOIN items AS i ON r.idreview = i.itemID
-      -- where (r.rating not like '%poor%') and (r.rating not like '%fair%')
-      where (i.userID = 'harry')
-      group by r.username, r.idreview
-      having (GROUP_CONCAT(r.rating) not like '%poor%') and (GROUP_CONCAT(r.rating) not like '%fair%');*/

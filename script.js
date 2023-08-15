@@ -95,7 +95,7 @@ class userSession {
         });
     };
 
-    displayUserList = (data) => {
+    displayUserList = (data, radioOption) => {
         table.innerHTML = ' ';
 
         let dataCopy = data;
@@ -104,17 +104,21 @@ class userSession {
             let html =
                 ` <div class="table--row">
             <div class="product--name"> User: ${data.userID} </div>
-            <div class="prodcut--description">
-                <div class="product--price"> Item: ${data.itemName}  </div>
-                <div class="product--ID"> ID: ${data.itemID}</div>
-                <div class="product--I"> Review by: ${data.username}</div>
-                <div class="product--A"> Review posted on ${data.date}: ${data.review}</div>
-                <div class="product--d"> Category: ${data.Category}</div>
+            `;
 
-            </div>
-    
-            <button class="review_btn"> view Reviews </button>
-                `;
+            if (radioOption === 'Poor Reviews') {
+                html += `<div class="prodcut--description">
+                    <div class="product--price"> Item: ${data.itemName}  </div>
+                            <div class="product--ID"> ID: ${data.itemID}</div>
+                            <div class="product--I"> Review by: ${data.username}</div>
+                            <div class="product--A"> Review posted on ${data.date}: ${data.review}</div>
+                            <div class="product--d"> Category: ${data.Category}</div>
+                    </div> `;
+            }
+
+            if (radioOption === 'mostItemsOn7/26') {
+                html += ` <div class="product--d"> Items Posted: ${data.item_count} </div>`;
+            }
 
             table.insertAdjacentHTML('afterbegin', html);
         });
@@ -132,7 +136,7 @@ class userSession {
 
         ///Send data we used for search option to backend and it will return said tables? 
         // const data = { title, description, category, price };
-        const data = { itemName, itemDescription, itemPrice, category, radioOption, userSearch};
+        const data = { itemName, itemDescription, itemPrice, category, radioOption, userSearch };
         console.log(data);
         const options = {
             method: 'POST',
@@ -148,7 +152,7 @@ class userSession {
 
 
         if (radioOption === 'Poor Reviews' || radioOption === 'mostItemsOn7/26') {
-            this.displayUserList(json.data);
+            this.displayUserList(json.data, radioOption);
         } else {
             this.displayItemList(json.data);
         }
