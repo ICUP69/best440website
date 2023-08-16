@@ -151,7 +151,7 @@ class userSession {
         // console.log(json);
 
 
-        if (radioOption === 'Poor Reviews' || radioOption === 'mostItemsOn7/26') {
+        if (radioOption === 'Poor Reviews' || radioOption === 'mostItemsOn7/26' || radioOption === 'never-had-PoorReviews') {
             this.displayUserList(json.data, radioOption);
         } else {
             this.displayItemList(json.data);

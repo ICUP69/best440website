@@ -160,7 +160,7 @@ app.post('/search', (request, response) => {
   const price = data.itemPrice;
   const description = data.itemDescription;
   const radioOption = data.radioOption;
-  const searchUser = data.userSearch; 
+  const searchUser = data.userSearch;
 
   let sql = '';
   let e = ` `;
@@ -224,8 +224,16 @@ app.post('/search', (request, response) => {
           JOIN items AS i ON r.idreview = i.itemID
           where (i.userID = '${searchUser}')
           group by i.itemName, i.itemDescription, i.itemPrice, i.userID , i.itemID, Category
-          having (GROUP_CONCAT(r.rating) not like '%poor%') and (GROUP_CONCAT(r.rating) not like '%fair%');
-          `;
+          having (GROUP_CONCAT(r.rating) not like '%poor%') and (GROUP_CONCAT(r.rating) not like '%fair%'); `;
+      break;
+
+    case 'never-had-PoorReviews':
+      sql = `Select distinct userID
+      from items
+      where userID not in 
+       (SELECT i.userID
+      FROM projectdb.items as i join review as r on r.idreview = i.itemID
+      WHERE r.rating = 'poor'); `;
       break;
 
     default:
