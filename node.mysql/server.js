@@ -162,9 +162,12 @@ app.post('/search', (request, response) => {
   const radioOption = data.radioOption;
   const searchUser = data.userSearch;
   const edate = data.seldate;
+  const cat1 = data.cate1;
+  const cat2 = data.cate2;
 
 
-  console.log(edate);
+  console.log(cat1);
+  console.log(cat2);
 
   let sql = '';
   let e = ` `;
@@ -240,15 +243,15 @@ app.post('/search', (request, response) => {
       WHERE r.rating = 'poor'); `;
       break;
     case 'uList':
-      sql =  `WITH UserItemCount AS (
-        SELECT userID, COUNT(*) AS item_count
-        FROM projectdb.items
-        WHERE DATE(date) = '${edate}'
-        GROUP BY userID
+      sql =  `WITH catSel AS (SELECT userID, category, COUNT(*) AS num_items_posted
+      FROM items
+      WHERE (category = '${cat1}'   OR category = '${cat2}')
+            AND DATE = '2023-08-17'
+      GROUP BY userID, category
       )
-      SELECT userID, item_count
-      FROM UserItemCount
-      WHERE item_count > 1; ` ;
+      
+      SELECT userID, category, num_items_posted
+      FROM catSel WHERE num_items_posted > 1;` ;      
       break; 
 
     default:

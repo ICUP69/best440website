@@ -33,6 +33,8 @@ const searchPrice = document.querySelector('.price-input');
 const table = document.querySelector('.table--display');
 const reviewBtn = document.querySelectorAll('.review_btn');
 const edate = document.querySelector('.edate');
+const cat1 = document.querySelector('.cat1');
+const cat2 = document.querySelector('.cat2');
 
 
 ///REVIEW FORM INTERACTIONS
@@ -134,13 +136,17 @@ class userSession {
         let radioOption = document.querySelector('input[name="option"]:checked').value;
         let userSearch = document.querySelector('.userx').value;
         let seldate = edate.value;
+        let cate1= cat1.value;
+        let cate2= cat2.value;
+
+
         // let maxCateg = max_Category.checked;
 
         
 
         ///Send data we used for search option to backend and it will return said tables? 
         // const data = { title, description, category, price };
-        const data = { itemName, itemDescription, itemPrice, category, radioOption, userSearch ,seldate};
+        const data = { itemName, itemDescription, itemPrice, category, radioOption, userSearch ,seldate, cate1, cate2};
         console.log(data);
         const options = {
             method: 'POST',

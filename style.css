@@ -403,6 +403,15 @@ padding-top: 30px;
 .userY{
   margin-top: 5px;
 }
+.cat1{
+  width: 100px;
+}
+.cat2{
+  width: 100px;
+}
+.catSel{
+  margin-left: 35px;
+}
 
 /* .prodcut--description{
   display: grid; 
