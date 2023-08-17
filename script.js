@@ -32,6 +32,7 @@ const searchCategory = document.querySelector('.cate-input');
 const searchPrice = document.querySelector('.price-input');
 const table = document.querySelector('.table--display');
 const reviewBtn = document.querySelectorAll('.review_btn');
+const edate = document.querySelector('.edate');
 
 
 ///REVIEW FORM INTERACTIONS
@@ -132,11 +133,14 @@ class userSession {
         let category = searchCategory.value;
         let radioOption = document.querySelector('input[name="option"]:checked').value;
         let userSearch = document.querySelector('.userx').value;
+        let seldate = edate.value;
         // let maxCateg = max_Category.checked;
+
+        
 
         ///Send data we used for search option to backend and it will return said tables? 
         // const data = { title, description, category, price };
-        const data = { itemName, itemDescription, itemPrice, category, radioOption, userSearch };
+        const data = { itemName, itemDescription, itemPrice, category, radioOption, userSearch ,seldate};
         console.log(data);
         const options = {
             method: 'POST',
@@ -151,7 +155,7 @@ class userSession {
         // console.log(json);
 
 
-        if (radioOption === 'Poor Reviews' || radioOption === 'mostItemsOn7/26' || radioOption === 'never-had-PoorReviews') {
+        if (radioOption === 'Poor Reviews' || radioOption === 'mostItemsOn7/26' || radioOption === 'never-had-PoorReviews' || radioOption === 'uList') {
             this.displayUserList(json.data, radioOption);
         } else {
             this.displayItemList(json.data);

@@ -161,6 +161,10 @@ app.post('/search', (request, response) => {
   const description = data.itemDescription;
   const radioOption = data.radioOption;
   const searchUser = data.userSearch;
+  const edate = data.seldate;
+
+
+  console.log(edate);
 
   let sql = '';
   let e = ` `;
@@ -210,7 +214,7 @@ app.post('/search', (request, response) => {
       sql = `WITH UserItemCount AS (
         SELECT userID, COUNT(*) AS item_count
         FROM projectdb.items
-        WHERE DATE(date) = '2023-08-11'
+        WHERE DATE(date) = '${edate}'
         GROUP BY userID
       )
       SELECT userID, item_count
@@ -235,6 +239,17 @@ app.post('/search', (request, response) => {
       FROM projectdb.items as i join review as r on r.idreview = i.itemID
       WHERE r.rating = 'poor'); `;
       break;
+    case 'uList':
+      sql =  `WITH UserItemCount AS (
+        SELECT userID, COUNT(*) AS item_count
+        FROM projectdb.items
+        WHERE DATE(date) = '${edate}'
+        GROUP BY userID
+      )
+      SELECT userID, item_count
+      FROM UserItemCount
+      WHERE item_count > 1; ` ;
+      break; 
 
     default:
       sql = `SELECT i.itemID, i.itemName, i.itemDescription, itemPrice, i.userID, GROUP_CONCAT( c.categories ) as Category 
