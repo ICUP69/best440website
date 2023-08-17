@@ -243,15 +243,18 @@ app.post('/search', (request, response) => {
       WHERE r.rating = 'poor'); `;
       break;
     case 'uList':
-      sql =  `WITH catSel AS (SELECT userID, category, COUNT(*) AS num_items_posted
+      sql =  `SELECT userID, 
+      CASE 
+          WHEN category LIKE '%${cat1}%' THEN '${cat1}'
+          WHEN category LIKE '%${cat2}%'THEN '${cat2}'
+          ELSE category 
+      END AS normal_cat, 
+      COUNT(*) AS num_items_posted
       FROM items
-      WHERE (category = '${cat1}'   OR category = '${cat2}')
-            AND DATE = '2023-08-17'
-      GROUP BY userID, category
-      )
-      
-      SELECT userID, category, num_items_posted
-      FROM catSel WHERE num_items_posted > 1;` ;      
+      WHERE (category LIKE '%${cat1}%' OR category LIKE '%${cat2}%')
+     AND DATE = '2023-08-17'
+    GROUP BY userID, normal_cat
+      HAVING COUNT(*) > 1;` ;      
       break; 
 
     default:
