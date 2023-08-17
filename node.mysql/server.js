@@ -252,7 +252,7 @@ app.post('/search', (request, response) => {
       COUNT(*) AS num_items_posted
       FROM items
       WHERE (category LIKE '%${cat1}%' OR category LIKE '%${cat2}%')
-     AND DATE = '2023-08-17'
+     AND DATE = '${edate}'
     GROUP BY userID, normal_cat
       HAVING COUNT(*) > 1;` ;      
       break; 
