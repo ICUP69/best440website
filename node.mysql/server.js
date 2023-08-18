@@ -175,7 +175,7 @@ app.post('/search', (request, response) => {
   let filter_max = ' ';
 
   categoryTest = category.split(' ');
-  e = `(c.categories LIKE'${categoryTest[0]}')`;
+  e = `(c.categories LIKE '%${categoryTest[0]}%')`;
 
   for (i = 1; i < categoryTest.length; i++) {
     if (categoryTest[i] !== '') {
@@ -188,7 +188,7 @@ app.post('/search', (request, response) => {
   }
 
   if (price !== '') {
-    e = e + ` and (i.itemPrice <= '${price}')`;
+    e = e + ` and (i.itemPrice >= '${price}')`;
   }
 
   if (search !== '') {
@@ -197,7 +197,7 @@ app.post('/search', (request, response) => {
 
 
   if (radioOption === 'Max of Category') {
-    filter_max = `, itemPrice asc`;
+    filter_max = `, cast(itemPrice as unsigned) asc`;
   }
 
   switch (radioOption) {
@@ -208,7 +208,7 @@ app.post('/search', (request, response) => {
     FROM projectdb.review AS r
     JOIN items AS i ON r.idreview = i.itemID
     JOIN categories AS c ON c.ID = i.itemID
-    WHERE r.rating = 'fair'
+    WHERE r.rating = 'poor'
     GROUP BY r.idreview, r.username, r.review, r.date,
     i.itemName, i.itemPrice, i.itemID, i.userID, i.itemDescription;`;
       break;
@@ -242,19 +242,14 @@ app.post('/search', (request, response) => {
       FROM projectdb.items as i join review as r on r.idreview = i.itemID
       WHERE r.rating = 'poor'); `;
       break;
+
     case 'uList':
-      sql =  `SELECT userID, 
-      CASE 
-          WHEN category LIKE '%${cat1}%' THEN '${cat1}'
-          WHEN category LIKE '%${cat2}%'THEN '${cat2}'
-          ELSE category 
-      END AS normal_cat, 
-      COUNT(*) AS num_items_posted
+      sql = `SELECT userID, COUNT(distinct category) AS item_count
       FROM items
-      WHERE (category LIKE '%${cat1}%' OR category LIKE '%${cat2}%')
+      WHERE (category LIKE '%${cat1}%' or category LIKE '%${cat2}%')
      AND DATE = '${edate}'
-    GROUP BY userID, normal_cat
-      HAVING COUNT(*) > 1;` ;      
+    GROUP BY userID
+      HAVING COUNT(category) > 1;`;
       break; 
 
     default:
@@ -308,9 +303,9 @@ app.post('/submit-form', (req, res) => {
   for (i = 1; i < test.length; i++) {
     e = `(LAST_INSERT_ID(),'${test[i]}'), ` + e;
   }
-  console.log(e);
+  console.log(curdate);
 
-  const itmCount = `SELECT COUNT(*) FROM projectdb.items WHERE projectdb.items.date = date AND userID = '${userID}';`;
+  const itmCount = `SELECT COUNT(*) FROM projectdb.items WHERE projectdb.items.date = ${curdate} AND userID = '${userID}';`;
 
   connection.query(itmCount, (error, result) => {
     if (error) {
@@ -321,7 +316,7 @@ app.post('/submit-form', (req, res) => {
       const count = result[0]['COUNT(*)'];
       console.log(count);
 
-      if (count >= 3) {
+      if (count > 3) {
         res.json({
           status: "item not submitted"
         });
@@ -383,22 +378,6 @@ app.post('/submit-form', (req, res) => {
 
         });
 
-        /*
-        // Execute the SQL statement with parameters
-        connection.query(sql, [itemName, itemDescription, itemPrice, userID, itemCategory, curdate], (err, result) => {
-          if (err) {
-            console.error('Error inserting item: ' + err.message);
-            res.send('Error inserting item');
-          } else {
-            console.log(result);
-            //const itemID = result.insertId; // Get the auto-incremented itemID after the insert
-            console.log('Form successfully submitted');
-            res.json({
-              status: "Form Successfully submitted"
-            });
-          }
-        }); */
-
       }
     }
   });
@@ -417,7 +396,7 @@ app.post('/submit-review', (req, res) => {
   // const user = req.body.currentUser;
   const curdate = new Date().toJSON().slice(0, 10);
 
-  const revCount = `SELECT COUNT(*) FROM projectdb.review WHERE projectdb.review.date = date AND username ='${user}';`;
+  const revCount = `SELECT COUNT(*) FROM projectdb.review WHERE projectdb.review.date = ${curdate} AND username ='${user}';`;
 
   connection.query(revCount, (error, result) => {
     if (error) {
@@ -425,7 +404,7 @@ app.post('/submit-review', (req, res) => {
     } else {
       const count = result[0]['COUNT(*)'];
       console.log(count);
-      if (count >= 3) {
+      if (count > 3) {
         res.json({
           status: "Review not submitted"
         });
@@ -451,3 +430,20 @@ app.post('/submit-review', (req, res) => {
   });
 });
 
+
+
+/*
+sql =  `SELECT userID, 
+      CASE 
+          WHEN category LIKE '%${cat1}%' THEN '${cat1}'
+          WHEN category LIKE '%${cat2}%'THEN '${cat2}'
+          ELSE category 
+      END AS Category, 
+      COUNT(*) AS item_count
+      FROM items
+      WHERE (category LIKE '%${cat1}%' OR category LIKE '%${cat2}%')
+     AND DATE = '${edate}'
+    GROUP BY userID, Category
+      HAVING COUNT(*) > 1;` ;      
+
+*/

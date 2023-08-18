@@ -119,7 +119,7 @@ class userSession {
                     </div> `;
             }
 
-            if (radioOption === 'mostItemsOn7/26') {
+            if (radioOption === 'mostItemsOn7/26' || radioOption === 'uList') {
                 html += ` <div class="product--d"> Items Posted: ${data.item_count} </div>`;
             }
 
@@ -436,105 +436,5 @@ confirmLogin.addEventListener('click', async function (e) {
         acc.value = '';
     });
 });
-
-
-
-/*
-search.addEventListener('click', async function (e) {
-    e.preventDefault();
-
-    itemName = searchTitle.value;
-    itemDescription = searchDescription.value;
-    itemPrice = searchPrice.value;
-    category = searchCategory.value;
-
-
-    ///Send data we used for search option to backend and it will return said tables?
-    // const data = { title, description, category, price };
-    const data = { itemName, itemDescription, itemPrice, category };
-    console.log(data);
-    const options = {
-        method: 'POST',
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data)
-    };
-
-    const response = await fetch('/search', options);
-    const json = await response.json();
-    // console.log(json);
-
-    displayList(json.data);
-});
-
-add.addEventListener('click', async (event) => {
-    event.preventDefault(); // Prevent default form submission behavior
-    //defining my variables to get values
-    itemName = searchTitle.value;
-    itemDescription = searchDescription.value;
-    itemPrice = searchPrice.value;
-    category = searchCategory.value;
-
-
-    //checking for valid inputs
-    if (itemName === "" || itemDescription === "" || itemPrice === "" || category === "") {
-        window.alert("Please fill in all values");
-        return;
-    }
-
-    console.log(currentUser);
-    const data = { itemName, itemDescription, itemPrice, category, currentUser };
-
-    // //getting response from server
-    // const form = event.target;
-    // const formData = new FormData(form);
-    try {
-        const options = {
-            method: 'POST',
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data)
-        };
-
-        const response = await fetch('/submit-form', options);
-        const json = await response.json();
-    } catch (error) {
-        console.error('Error submitting form:', error);
-    }
-});
-
-reviewSubmit.addEventListener('click', async function (e) {
-    e.preventDefault();
-    const Rating = reviewRate.value;
-    const Review = userReview.value;
-    console.log(reviewRate.value);
-
-    if (selectedItemUser === currentUser) {
-        alert('Cannot review own items');
-        return;
-    }
-
-    const data = { Rating, Review, selectedItem, currentUser };
-    const options = {
-        method: 'POST',
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data)
-    };
-
-    const response = await fetch('/submit-review', options);
-    const json = await response.json();
-    console.log(json);
-
-    reviewTab.classList.add('hidden');
-    closeWindow();
-
-});
-
-*/
-
 
 
