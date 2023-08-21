@@ -23,6 +23,9 @@ Phase 1: worked on the sql prevention attacks making sure the password and the c
 Phase 2: Worked on adding front end functionality too the sign out button for a smooth transition. Polished the front end of the review interface added front end functionality too the buttons. 
 Worked on backend so only 3 items could be added and only 3 reviews could be added per account per day. Refined the back end of for the search results of categories. Created and posted the video for phase 2.
 
+phase 3: Added a date picker to add more flexibilty for the filter and too refine data search for certian items. Added the function to find users who posted more than 2 items on a certian categories and displayed the 
+list of users on the interface. Minor bug fixes that affected proper functionality.
+
 
 youtube link: phase 1
 
