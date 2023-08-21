@@ -396,7 +396,7 @@ app.post('/submit-review', (req, res) => {
   // const user = req.body.currentUser;
   const curdate = new Date().toJSON().slice(0, 10);
 
-  const revCount = `SELECT COUNT(*) FROM projectdb.review WHERE projectdb.review.date = ${curdate} AND username ='${user}';`;
+  const revCount = `SELECT COUNT(*) FROM projectdb.review WHERE projectdb.review.date = '${curdate}' AND username ='${user}';`;
 
   connection.query(revCount, (error, result) => {
     if (error) {
