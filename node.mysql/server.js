@@ -305,7 +305,7 @@ app.post('/submit-form', (req, res) => {
   }
   console.log(curdate);
 
-  const itmCount = `SELECT COUNT(*) FROM projectdb.items WHERE projectdb.items.date = ${curdate} AND userID = '${userID}';`;
+  const itmCount = `SELECT COUNT(*) FROM projectdb.items WHERE projectdb.items.date = '${curdate}' AND userID = '${userID}';`;
 
   connection.query(itmCount, (error, result) => {
     if (error) {
