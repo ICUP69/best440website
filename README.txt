@@ -7,6 +7,8 @@ Phase 1: Created the webpage interface with css and html and made it responsive 
 
 Phase 2: Designed the user form and list display and implemented the search feature where I sent the info to the server and displayed the results in a list. I did part of the review where I got info form selected items and I setup the backened function of review. 
 
+Phase 3: Made max of category feature, listed all the items posted by user X, such that all the comments are "Excellent" or "good" and displayed those users such that each item they posted so far never received any "poor" reviews. I also refactored the code to make it more cleaner and improvised the search feature. Fixed some bugs in the code. 
+
 --------------------------------------------------------------------
 
 Alfredo Gonzalez: 
