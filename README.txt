@@ -13,7 +13,10 @@ Phase 3: Made max of category feature, listed all the items posted by user X, su
 
 Alfredo Gonzalez: 
 Phase 1: Fixed a bug where querying an unknown user caused a crash. Fixed a block of code responsible for correctly pathing to the right files. Added a line of code to help mitigate sql injection.
+
 Phase 2: Implemented the ability to add an item to the database. Set the html code to be able to display the table of relevant search functions.
+
+Phase 3: Phase 3: Implemented radio buttons to be able filter between the different requirements. Worked on the portion of phase 3 that returned all the users who had a "poor" review on their post. Implemented the primitive version of the users who posted on 7/26/23 which was later expanded by someone else.
              
 ---------------------------------------------------------------------
 
